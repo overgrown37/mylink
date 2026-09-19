@@ -13,11 +13,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "김무성 | 프로필",
-  description: "바이브 코딩을 배우고 있는 대학생 김무성의 프로필입니다.",
+  title: "김무성 (MyLink) | 프로필 링크",
+  description: "김무성의 소셜 링크, 프로젝트 및 포트폴리오를 한눈에 볼 수 있는 마이 링크 페이지입니다.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html
       lang="ko"
