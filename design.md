@@ -1,127 +1,121 @@
 ## Overview
 
-Nintendo.com circa 2001 is the web rendered as **console hardware**. Where most sites of the era reached for either grunge texture or corporate gradients, this interface builds itself out of **brushed-periwinkle metal plates** — every region is a discrete beveled panel, edge-lit with a brighter highlight on top and a `{colors.chrome-indigo}` shadow line beneath, as if stamped from the same injection-molded plastic as a Game Boy. The whole page reads as one machine faceplate: a body of `{colors.canvas}` periwinkle chrome carrying inset modules, with the corners of the largest panels physically **chamfered** (cut at 45°) rather than rounded, reinforcing the manufactured-object feeling.
+Discord's marketing design is loud on purpose. The pages live on a deep-indigo canvas (`{colors.canvas}` — #0a0d3a) that is rarely still: it is washed by an animated mesh of Blurple, violet, and vibrant magenta, then punctuated by full-bleed gradient bands and oversized rounded media. Where most product sites whisper in restrained neutrals, Discord shouts in heavy all-caps ABC Ginto Nord, stacks playful 3D character art, and lets a single electric green CTA (`{colors.green}`) pop against the cool indigo. The whole system reads like an arcade cabinet: energetic, saturated, unmistakably gaming-native.
 
-The system runs on a tight three-voice contrast. The structural voice is the cool periwinkle-to-indigo chrome (`{colors.canvas}`, `{colors.periwinkle}`, `{colors.chrome-indigo}`). The authority voice is `{colors.carbon}` carbon-navy — the top navigation bar, the right-rail action buttons, and the footer, all near-black slabs printed with a faint **halftone dot-matrix texture** that evokes a speaker grille. The energy voice is warm and reserved for one job only: telling you where to go. `{colors.nav-gold}` lights the primary menu words, `{colors.amber}` fills the utility chips and badges, and `{colors.signal}` orange marks every "forward" cue — the round arrow buttons, the chevron chips beside each headline, the Submit button. Warmth in this system always means *action*; the cool chrome never carries it.
+The brand anchor is **Blurple** (`{colors.primary}` — #5865f2) — Discord's signature indigo-violet. It owns the primary CTA, the marquee and CTA bands, stat cards, and the brand mark. Around it orbit two supporting accents: the electric **green** (`{colors.green}`) used for the highest-intent "get started" actions, and a vibrant **magenta** (`{colors.magenta}` — #ec48bd) that fills the gradient feature panels and step cards. Surfaces stack in cool darks — the indigo canvas, a raised indigo panel (`{colors.surface-indigo}`), an onyx UI card (`{colors.surface-onyx}`), and pure black (`{colors.surface-black}`) showcase bands.
 
-Atmosphere comes from the **hero fields**, which break the periwinkle calm with full-bleed product photography over textured backdrops — a circuit-board cyan on Systems, a motion-blurred racetrack red on Games, a soft lavender wash on Home — each topped with chunky `{typography.display}` wordmarks rendered in white with a heavy outline and hard drop shadow, the visual signature of game-box cover type. A pixel-eared Mario leans in from the masthead with a "Welcome to Nintendo.com!" speech bubble, anchoring the entire machine to the brand's playful character voice.
+Geometry is soft and generous. Everyday controls round at `{rounded.sm}` (12px) and `{rounded.lg}` (16px); media tiles and feature panels bow out at `{rounded.xl}` (40px) and beyond; the most expressive shapes reach `{rounded.jumbo}` (120px) and pill caps. Nothing is sharp. The result is friendly, toy-like, and built to make software feel like play.
 
 **Key Characteristics:**
-- Every UI region is a **beveled metal plate** in `{colors.canvas}` periwinkle, edge-lit on top and shadow-lined with `{colors.chrome-indigo}` below — the page is assembled, not laid out.
-- **Chamfered (cut-corner) panel geometry** on the largest modules; most chrome is sharp-edged (`{rounded.none}`), with rounding reserved for the logo pill, radio dots, and circle-arrow badges (`{rounded.full}`).
-- A **carbon-navy command layer** (`{colors.carbon}`) with halftone-dot texture carries the top nav, right-rail buttons, and footer.
-- Warmth is rationed as **directional signal only**: `{colors.nav-gold}` for menu words, `{colors.amber}` for utility chips/badges, `{colors.signal}` for every forward/Submit cue.
-- **Photographic hero fields** cycle a page-specific accent tint (`{colors.lavender}` home → `{colors.systems-teal}` systems → `{colors.games-red}` games) under outlined `{typography.display}` box-art wordmarks.
-- A dense, **modular grid** — masthead, dual nav bars, hero, then a two-thirds content column of stacked list/feature panels beside a one-third right action rail — packed with minimal whitespace.
-- **Character-led**: the Mario mascot speech-bubble masthead and ESRB badge frame the chrome with brand personality and regulatory trust marks.
+- Deep-indigo canvas (`{colors.canvas}`) lit by an animated Blurple-to-magenta gradient mesh — never a flat or neutral background.
+- One iconic brand colour: Blurple (`{colors.primary}`) owns CTAs, bands, and the brand mark; electric green (`{colors.green}`) is reserved for highest-intent actions.
+- Vibrant magenta (`{colors.magenta}`) gradient feature panels and step cards carry the playful, saturated energy.
+- Heavy all-caps display type in `{typography.display-xl}` (ABC Ginto Nord 800) shouting over generously rounded media.
+- Soft, toy-like geometry: 12–16px on controls, 40px+ on media, up to `{rounded.jumbo}` on signature shapes.
+- Page rhythm: dark-indigo hero → gradient + dark feature cards → black showcase band → Blurple marquee/CTA band → giant wordmark footer.
 
 ## Colors
 
-The palette is a **cool metallic chassis with rationed warm signal**. Read it as three layers: the periwinkle chrome that everything is built from, the carbon command slabs, and the warm wayfinding accents that are the only saturated color in the steady-state interface.
+> Source pages analyzed: home, ads/quests, nitro, trending-games. Blurple, green, magenta, white display type, and the deep-indigo canvas recur on every page; nitro adds the pricing table, trending-games adds the ranked game list.
 
 ### Brand & Accent
-- **Nintendo Red** (`{colors.primary}` — #e60012): The racetrack logo wordmark and the brand's anchor hue. Used sparingly as pure brand identity and doubled as the validation/alert color. Never a surface fill outside the logo plate.
-- **Signal Orange** (`{colors.signal}` — #f68d1f): The "go forward" color. Fills every round arrow button, every chevron chip beside a headline, the Submit button, and the "Play It On" platform badges. If something advances you, it is orange.
-- **Amber** (`{colors.amber}` — #ecab37): Utility energy. Fills the Code Bank / Game Finder / Go chips, the info-box header tabs, the sweepstakes stars, and the ESRB Privacy-Certified badge. Distinguished from Signal Orange by being more golden and reserved for *tools and marks* rather than *forward motion*.
-- **Nav Gold** (`{colors.nav-gold}` — #e48600): The deeper orange-gold reserved exclusively for the primary navigation words (Games, Systems, News, Nsider, Downloads) glowing on the carbon bar.
+- **Blurple** (`{colors.primary}` — #5865f2): The iconic brand colour. Primary CTA fill, marquee and CTA bands, stat cards, brand mark. The single most-used action colour.
+- **Electric Green** (`{colors.green}` — #35ed7e): Reserved for the highest-intent CTA ("get started" / "download"), always paired with `{colors.ink-dark}` text.
+- **Vibrant Magenta** (`{colors.magenta}` — #ec48bd): The saturated pink that fills gradient feature panels, step cards, and badges — the playful counterweight to the cool indigo.
+- **Link Cyan** (`{colors.link}` — #00b0f4): Inline text-link colour on dark surfaces.
 
 ### Surface
-- **Periwinkle Metallic** (`{colors.canvas}` — #7a8aba): The primary interface body — the brushed-metal chrome that every module is inset into.
-- **Light Periwinkle** (`{colors.periwinkle}` — #8ba1d4): Raised mid panels (poll panel, system tiles) — one step brighter than canvas for elevation.
-- **Pale Sky** (`{colors.sky}` / `{colors.canvas-soft}` — #9fbee7): The secondary-nav strip and light inset panel fills.
-- **Pale Lavender** (`{colors.lavender}` — #acace7): The home hero field and side promo cards.
-- **Pale Ice** (`{colors.ice}` — #c0d5e6): The News hero panel field.
-- **Chrome Indigo** (`{colors.chrome-indigo}` — #3d4f97): The beveled border / shadow line under every plate, and the leading angled edge of nav tabs.
-- **Muted Indigo** (`{colors.muted-indigo}` — #60619c): Inactive tabs and recessed chrome.
-- **Platinum Gray** (`{colors.platinum}` — #dedede): The list-row and inset content surface — news headlines and archive rows sit on this cool platinum.
-- **White** (`{colors.surface}` — #ffffff): Content cards, form fields, the logo pill, and list-row highlight.
+- **Indigo Canvas** (`{colors.canvas}` — #0a0d3a): The deep-indigo page base, washed by the animated brand-gradient mesh.
+- **Raised Indigo** (`{colors.surface-indigo}` — #1e2353): One step up from canvas — dark feature cards, pricing table, game-rank rows, ghost buttons.
+- **Onyx** (`{colors.surface-onyx}` — #23272a): Discord's classic dark-UI surface; product-chrome cards and dividers.
+- **Black** (`{colors.surface-black}` — #000000): Full-black showcase bands framing product media.
 
 ### Text
-- **Carbon Navy** (`{colors.ink}` — #21242e): Primary text on light chrome, and the fill of the dark command layer (nav bar, rail buttons, footer).
-- **Chrome Indigo** (`{colors.ink-soft}` — #3d4f97): Secondary text and small-caps chrome labels.
-- **White** (`{colors.on-primary}` — #ffffff): Text on carbon, red, and orange chrome.
+- **White** (`{colors.ink}` — #ffffff): All display and body text on the dark canvas. The dominant text colour.
+- **Ink** (`{colors.ink-dark}` — #000000): Text on light fills — the white button and green CTA.
+- **Muted Ink** (`{colors.muted}` — #333333): Secondary text on the occasional light surface (white product-mockup cards).
 
-### Semantic
-- **Error / Alert** (`{colors.error}` — #e60012): Validation and destructive states reuse the brand red.
-- **Systems Teal** (`{colors.systems-teal}` — #206479): Page-accent tint — the Systems hero's circuit-board cyan field.
-- **Games Red** (`{colors.games-red}` — #a7282b): Page-accent tint — the Games hero's motion-blurred racetrack field.
+### Brand Gradient
+The hero and feature panels ride an animated mesh that sweeps from `{colors.primary}` (Blurple) through a deep violet into the vibrant `{colors.magenta}`, resolving back into the `{colors.canvas}` indigo at the edges. It is the brand's defining atmospheric signature — always in motion, never a flat fill.
 
 ## Typography
 
 ### Font Family
-The era's web-safe reality is **Arial / Helvetica** throughout — there are no webfonts. The system gets its character not from typeface choice but from *treatment*: tight uppercase tracking on every chrome label, and a heavy outlined-and-shadowed display style for hero wordmarks that mimics console box-art logotype. Body copy is plain small Arial; links are the same family at bold weight in `{colors.ink-soft}`.
+- **ABC Ginto Nord** — the heavy display face. All marketing headlines, set in 700–800 weight, frequently all-caps. Wide, confident, slightly condensed character that reads as "gaming."
+- **ABC Ginto** — the lighter companion for lead paragraphs, links, and buttons (weight 500).
+- **ggsans** — Discord's in-product UI sans, used for dense body copy (16px / 400).
 
-The micro-labels (vertical left-rail tabs, footer fine print) render with the soft pixelation characteristic of small bitmap-rendered Arial of the period — for a faithful reproduction, pair Arial with a pixel face such as **Silkscreen** or **VT323** at the 10–11px label sizes.
+**Note on font substitutes:** ABC Ginto Nord and ggsans are proprietary. For an open-source rebuild, pair a heavy geometric grotesque — **Hanken Grotesk** or **Space Grotesk** at 700–800 — for display, with **Inter** or **Plus Jakarta Sans** for body and UI. Keep headlines bold and tracked tight; the loud, confident display weight is the brand's voice.
 
 ### Hierarchy
 
 | Token | Size | Weight | Line Height | Letter Spacing | Use |
 |---|---|---|---|---|---|
-| `{typography.display}` | 44px | 900 | 1 | 0 | Hero box-art wordmarks (white, heavy outline + hard drop shadow) |
-| `{typography.hero-tagline}` | 15px | 700 | 1.3 | 0 | Hero supporting line ("Gorgeous graphics, great sound…") |
-| `{typography.nav-link}` | 13px | 700 | 1 | 0.5px | Primary nav menu words, uppercase |
-| `{typography.ui-label}` | 11px | 700 | 1.1 | 0.5px | Section header labels, panel titles, button text — uppercase |
-| `{typography.link}` | 12px | 700 | 1.4 | 0 | News headline links, "Read More" |
-| `{typography.body}` | 12px | 400 | 1.4 | 0 | Descriptions, poll text, info-box copy |
-| `{typography.micro}` | 10px | 400 | 1.3 | 0 | Footer copyright, calendar cells, fine print |
+| `{typography.display-xl}` | 82px | 800 | 1.0 | 0 | Hero headline (all-caps) |
+| `{typography.display-lg}` | 62px | 800 | 1.05 | 0 | Marquee band, major headline |
+| `{typography.display-md}` | 56px | 700 | 1.05 | 0 | Section headline, CTA band |
+| `{typography.heading-lg}` | 48px | 700 | 1.1 | 0 | Sub-section heading |
+| `{typography.heading-sm}` | 22px | 700 | 1.2 | 0 | Card heading, step label |
+| `{typography.body-lg}` | 20px | 500 | 1.4 | 0 | Lead paragraph |
+| `{typography.link-lg}` | 18px | 500 | 1.4 | 0 | Large button label, prominent link |
+| `{typography.body}` | 16px | 400 | 1.5 | 0 | Default body copy (ggsans) |
+| `{typography.link}` | 16px | 500 | 1.4 | 0 | Nav link, button label |
+| `{typography.link-sm}` | 14px | 500 | 1.4 | 0 | Small link, badge, fine print |
 
 ### Principles
-- **Uppercase + tracking is the chrome voice.** Every structural label — nav words, panel headers ("Official News", "Featured Sites", "Player's Poll"), button text — is uppercase Arial Bold with a half-pixel of tracking. It reads like silkscreened legends on a controller.
-- **Display type is outlined, never flat.** Hero wordmarks always carry a thick contrasting outline and a hard offset shadow so they pop off the photographic field — the box-art convention.
-- **Body stays small and quiet.** At 12px, descriptive copy never competes with the chrome; the hierarchy is carried entirely by the labels and the photography.
-
-### Note on Font Substitutes
-Arial is freely available system-wide and needs no substitute. To recreate the period bitmap rendering of micro-labels, layer a pixel font (**Silkscreen**, **VT323**, or **Press Start 2P** for the chunkiest legends) at 10–11px and disable anti-aliasing. The display wordmarks are bespoke logotypes; the closest open substitute is **Archivo Black** (italicized) or **Arial Black** with a CSS text-stroke outline and `text-shadow` offset.
+- Headlines are short, declarative, and frequently ALL-CAPS in ABC Ginto Nord 800 — the loudest element on every page.
+- Body copy drops to the lighter ABC Ginto / ggsans 400–500 so the display type stays the hero.
+- The display-to-body weight jump (800 → 400/500) is dramatic on purpose; there is no timid mid-weight in between.
 
 ## Layout
 
 ### Spacing System
-- **Base unit**: 8px (`{spacing.sm}`) — the gutter rhythm between list rows and grid cells.
-- **Tokens**: `{spacing.xxs}` 2px · `{spacing.xs}` 4px · `{spacing.sm}` 8px · `{spacing.md}` 12px · `{spacing.lg}` 16px · `{spacing.xl}` 24px · `{spacing.xxl}` 32px · `{spacing.section}` 48px
-- Panels carry **12px interior padding** (`{spacing.md}`); larger content modules use **16px** (`{spacing.lg}`). Inter-module gaps run 16–24px. The layout is deliberately dense — whitespace is a structural seam between plates, not a luxury.
+- **Base unit**: 8px.
+- **Tokens**: `{spacing.xxs}` 4px · `{spacing.xs}` 8px · `{spacing.sm}` 12px · `{spacing.md}` 16px · `{spacing.lg}` 20px · `{spacing.xl}` 24px · `{spacing.xxl}` 32px · `{spacing.section}` 40px.
+- Card interiors run `{spacing.xl}`–`{spacing.section}`; buttons pad `{spacing.sm}`–`{spacing.lg}` vertical by `{spacing.xl}` horizontal.
 
 ### Grid & Container
-- **Fixed-width canvas** ~780–830px wide (a desktop-era fixed table layout, centered). No fluid scaling — the interface is sized to a single target window like an application.
-- **Masthead row**: Mario mascot + speech bubble (left) and search module (right) float above the chrome.
-- **Dual nav bars**: a carbon primary bar (logo + 5 section words + Code Bank / Game Finder utility chips) stacked over a periwinkle secondary strip (Parents, Customer Service, Corporate, Global, Privacy, Store, Contact).
-- **Body**: a full-width hero panel, then a **two-column split** — a ~two-thirds content column of stacked panels (Official News list, Featured Sites 2×2 grid, etc.) beside a ~one-third **right action rail** (Login / Subscribe / Newsletter / Help buttons, an info box, a side promo card).
-- **Left rail**: a thin vertical strip of rotated tabs (Top Ten, Top Rentals, Player's Choice, ESRB Ratings) clipped to the chrome edge.
+- Centered max-width content column (~1200px) on the full-bleed indigo canvas.
+- Feature sections alternate a two-column split (text + media) with stacked full-width gradient/dark cards.
+- Marquee, CTA, and showcase bands are full-bleed colour fields with their own rounded inner containers.
 
 ### Whitespace Philosophy
-Empty space is **engineered seam**, not breathing room. Modules butt against each other separated by thin `{colors.chrome-indigo}` bevel lines and a few pixels of canvas, so the eye reads grouped plates. The density is intentional: it makes the page feel like a packed control panel where everything is one click away.
+Sections breathe through large vertical gaps of indigo, then collide with saturated colour bands for rhythm. Inside cards, generous padding lets oversized 3D art and product mockups float with air.
 
 ### Responsive Strategy
 
 #### Breakpoints
 | Name | Width | Key Changes |
 |---|---|---|
-| Desktop (only) | ~780–830px fixed | The native, sole target — a fixed-width application-style layout |
-| Narrow window | < 780px | Horizontal scroll (no reflow); the table layout does not collapse |
+| Mobile | < 768px | Single column; nav collapses to logo + hamburger; CTAs stack full-width |
+| Tablet | 768–1023px | Two-column splits begin stacking; gradient cards go full-width |
+| Laptop | 1024–1279px | Container narrows; multi-column grids retained |
+| Desktop | ≥ 1280px | Full multi-column grids; centered ~1200px column |
 
-This is a **pre-responsive, fixed-canvas** design. It was authored for a single desktop window size and does not reflow. A faithful *modern* re-implementation would preserve the fixed chrome metaphor on desktop and, below ~720px, stack the right action rail beneath the content column and collapse the dual nav bars into a single carbon bar with a disclosure toggle.
+(Discord ships an unusually dense breakpoint ladder — dozens of stops between 240px and ~2000px — to keep the oversized display type and 3D art balanced at every width.)
 
 #### Touch Targets
-Not a consideration in the original (mouse-only era); buttons and chips are 18–28px tall. A modern port must enlarge the `{components.button-primary}`, `{components.button-icon-arrow}`, and `{components.radio-option}` hit areas to a 44×44px minimum.
+`{components.button-primary}` and `{components.button-green}` clear ≥44px tap height via their vertical padding. Nav links and game-rank rows meet the same minimum on mobile.
 
 #### Collapsing Strategy
-On a modern narrow viewport: dual nav bars → single carbon bar + menu disclosure; two-column body → single stacked column with the right rail moving below content; the left rotated-tab strip → a horizontal scroll chip row or removed; fixed hero → fluid full-bleed hero retaining the outlined wordmark.
+The dark top nav (logo · links · Login · Download CTA) collapses to logo + hamburger below 768px. Two-column feature rows stack media-over-text; gradient and dark cards span full width. The nitro pricing table becomes horizontally scrollable; the trending-games ranked list keeps its row layout but drops secondary columns.
 
 #### Image Behavior
-Hero fields are **full-bleed photographic plates** clipped to the panel's beveled rectangle; featured-site and game tiles are fixed-pixel thumbnails (~95×60px) in a tight grid. No lazy loading (era predates it). Product renders sit on textured backdrops rather than transparent cutouts.
+Product mockups and 3D character art sit inside rounded media frames (`{rounded.lg}`–`{rounded.xl}`) or bleed past card edges as decorative props. Media scales fluidly within its container and keeps its corner radius at every width.
 
 ## Elevation & Depth
 
-Depth in this system is **physical bevel simulation**, not soft shadow. There is no blurred drop-shadow vocabulary; instead every plate is given the illusion of being a raised piece of molded plastic.
-
 | Level | Treatment | Use |
 |---|---|---|
-| 0 — Inset | Recessed into canvas; darker `{colors.chrome-indigo}` top edge, lighter bottom edge | List rows, form fields, the canvas body itself |
-| 1 — Plate | Flush panel; lighter top highlight, `{colors.chrome-indigo}` shadow line beneath | Content panels, system tiles, info box |
-| 2 — Raised chip | Beveled button with bright top edge + hard bottom shadow | Utility chips, Go/Submit buttons, nav tabs |
-| 3 — Command slab | `{colors.carbon}` near-black with halftone texture, sits "above" the chrome | Top nav bar, right-rail buttons, footer |
+| 0 — Flat | No shadow; separation by colour field + large radius | Most cards, colour bands |
+| 1 — Soft float | `0 3px 68px rgba(69,42,124,0.1)` — wide, violet-tinted, very diffuse | Floating media cards, elevated mockups |
+
+Discord leans on **colour, gradient, and radius** for depth far more than on shadow. The one extracted shadow is a wide, violet-tinted diffuse glow that lifts product media off the indigo canvas without a hard edge.
 
 ### Decorative Depth
-Depth is also carried by **texture and photography**: the halftone dot-matrix on carbon slabs reads as a recessed speaker grille; hero fields use motion-blur, circuit-board patterns, and product renders with their own cast shadows to create literal pictorial depth; chamfered corners on the outer chrome suggest a machined faceplate edge. The left-rail rotated tabs appear to tuck *behind* the main chrome, a small but effective layered cue.
+- The animated Blurple-to-magenta gradient mesh creates depth by motion and hue rather than shadow.
+- 3D character art and product props overlap card edges to build playful depth.
+- Full-bleed colour bands (Blurple, black) push depth by contrast against the indigo scroll.
 
 ## Shapes
 
@@ -129,128 +123,97 @@ Depth is also carried by **texture and photography**: the halftone dot-matrix on
 
 | Token | Value | Use |
 |---|---|---|
-| `{rounded.none}` | 0px | The default — nav bar, footer, most chrome plates (sharp / chamfered, not rounded) |
-| `{rounded.xs}` | 2px | Utility buttons, form fields, badges |
-| `{rounded.sm}` | 4px | Small panels, featured tiles, list rows |
-| `{rounded.md}` | 6px | Content panels, hero panel |
-| `{rounded.lg}` | 10px | Outer section panels, mascot bubble |
-| `{rounded.full}` | 9999px | Logo racetrack pill, radio dots, circle-arrow badges |
-
-The signature is **sharpness with rationed roundness**. The chrome is hard-edged and frequently *chamfered* (corners cut at 45° rather than curved) — this is the manufactured-faceplate look. Roundness appears only where it signals a physical control: the fully-pill logo, the round radio buttons, and the round Signal-Orange arrow badges. A modern reproduction should resist the urge to soften every corner; the tension between sharp plates and the few pill elements is the whole character.
+| `{rounded.xs}` | 6px | Small ghost buttons, compact chips |
+| `{rounded.sm}` | 12px | Primary / green CTA buttons, links, table cells |
+| `{rounded.md}` | 14px | Game-rank rows, mid controls |
+| `{rounded.lg}` | 16px | White / ghost buttons, cards, media frames |
+| `{rounded.xl}` | 40px | Gradient feature panels, large media tiles |
+| `{rounded.pill}` | 50px | Pill caps, badges, avatar chips |
+| `{rounded.jumbo}` | 120px | Signature oversized rounded shape cards |
+| `{rounded.full}` | 9999px | Circular avatars and icon buttons |
 
 ### Photography Geometry
-Hero photography fills beveled rectangles at roughly 4:1 (banner) and 16:9 proportions, full-bleed within the panel. Featured-site and game thumbnails are near-4:3 fixed tiles (~95×60px) framed by a 1–2px `{colors.chrome-indigo}` edge with `{rounded.sm}` corners. The mascot is a transparent cutout overlapping the masthead, breaking the rectangular grid for personality.
+Media is presented at soft-cornered rectangles (`{rounded.lg}`–`{rounded.xl}`), never hard-edged. The hero media block uses a directional bottom-only radius (88px bottom corners) for a swooping base. Avatars and circular icon controls are fully round.
 
 ## Components
 
-> No hover states are documented. Each spec below covers Default and (where extracted) Pressed/Active. Variants live as separate `components:` entries.
-
-### Navigation
-
-**`nav-bar`** — Primary top navigation
-- `{colors.carbon}` slab with a faint halftone-dot texture, ~28px tall, carrying the `{components.logo-pill}` at left, the five `{colors.nav-gold}` section words in `{typography.nav-link}` uppercase, and the amber Code Bank / Game Finder utility chips at right. Sharp corners (`{rounded.none}`), `{spacing.sm}` padding.
-
-**`subnav-strip`** — Secondary navigation
-- A `{colors.canvas-soft}` pale-sky strip directly beneath the nav bar, carrying utility links (Parents, Customer Service, Corporate, Global, Privacy, Store, Contact) in `{typography.ui-label}` `{colors.ink}`, separated by thin dividers. Sharp, `{spacing.xs}` padding.
-
-**`left-rail-tab`** — Rotated section tabs
-- A thin vertical strip of `{colors.carbon}` tabs (Top Ten, Top Rentals, Player's Choice, ESRB Ratings) with vertically-rotated `{typography.ui-label}` text in `{colors.canvas-soft}`, clipped to the left chrome edge. Sharp corners, `{spacing.xs}` padding.
-
-### Brand & Masthead
-
-**`logo-pill`** — Nintendo racetrack logo
-- The wordmark in `{colors.primary}` red set inside a white `{rounded.full}` racetrack pill, outlined. Sits at the left of the nav bar. `{spacing.xs}` padding.
-
-**`mascot-bubble`** — Mario welcome speech bubble
-- A white `{rounded.lg}` rounded-rectangle speech bubble with a tail, carrying "Welcome to Nintendo.com!" in `{typography.micro}` `{colors.carbon}`, paired with the Mario cutout in the masthead. `{spacing.sm}` padding.
+> No hover states documented. Component specs cover Default and Active/Pressed only; variants are separate `components:` entries.
 
 ### Buttons
 
-**`button-primary`** — Amber utility / Go chip
-- `{colors.amber}` fill, `{colors.carbon}` text in `{typography.ui-label}`, `{rounded.xs}` corners, `{spacing.md}` padding, with a beveled top highlight. The everyday tool button (Code Bank, Game Finder, Go).
-- Pressed state in **`button-primary-pressed`** — fill deepens to `{colors.nav-gold}`.
+**`button-primary`** — the Blurple pill CTA
+- Background `{colors.primary}`, text `{colors.on-primary}`, type `{typography.link-lg}`, rounded `{rounded.sm}`, padding `{spacing.lg} {spacing.xl}`. The everyday action button across hero and feature sections.
 
-**`button-submit`** — Forward / Submit
-- `{colors.signal}` orange fill, `{colors.on-primary}` white text in `{typography.ui-label}`, `{rounded.xs}`, `{spacing.lg}` padding. The "commit" action (poll Submit, Go on archives).
+**`button-green`** — the electric-green high-intent CTA ("Get Started" / "Download")
+- Background `{colors.green}`, text `{colors.ink-dark}`, type `{typography.link-lg}`, rounded `{rounded.sm}`, padding `{spacing.sm} {spacing.xl}`. The highest-visibility action; black label for contrast.
 
-**`button-secondary`** — Right-rail action button
-- `{colors.carbon}` near-black slab, `{colors.on-primary}` white text in `{typography.ui-label}`, sharp `{rounded.none}` corners, `{spacing.md}` padding, with a small leading icon. Used for Login / Subscribe / Newsletter / Help in the right rail.
+**`button-white`** — white solid button
+- Background `{colors.ink}`, text `{colors.ink-dark}`, type `{typography.link}`, rounded `{rounded.lg}`, padding `{spacing.xs} {spacing.md}`.
 
-**`button-icon-arrow`** — Round forward arrow
-- A 22px `{colors.signal}` orange `{rounded.full}` disc with a white chevron — the primary "go" affordance on hero panels and section links.
+**`button-ghost`** — translucent indigo button on dark surfaces
+- Background `{colors.surface-indigo}`, text `{colors.ink}`, type `{typography.link}`, rounded `{rounded.lg}`, padding `{spacing.md}`.
 
-**`button-arrow-chip`** — Headline chevron chip
-- An 18px `{colors.signal}` orange `{rounded.xs}` chip with a white forward chevron, sitting at the right end of each `{components.news-row}` to advance to the article.
+**`button-ghost-sm`** — compact ghost button (quests CTA row)
+- Background `{colors.surface-indigo}`, text `{colors.ink}`, type `{typography.link-sm}`, rounded `{rounded.xs}`, padding `{spacing.sm} {spacing.xxl}`.
+
+### Cards & Containers
+
+**`hero`** — dark-indigo hero
+- Indigo `{colors.canvas}` field with the animated gradient mesh, white `{colors.ink}` all-caps headline at `{typography.display-xl}`, lead paragraph, and a CTA pair. The hero media block carries a swooping bottom-only radius.
+
+**`feature-card-gradient`** — vibrant magenta gradient feature panel
+- Background `{colors.magenta}` gradient, white text, `{rounded.xl}` (40px), padding `{spacing.section}`. Frames a product mockup or 3D prop.
+
+**`feature-card-dark`** — raised dark feature card
+- Background `{colors.surface-indigo}`, white text, `{rounded.xl}`, padding `{spacing.xxl}`. Holds product screenshots / chat mockups.
+
+**`showcase-band-black`** — full-black product showcase band
+- Background `{colors.surface-black}`, white text, `{rounded.xl}`, padding `{spacing.section}`. Frames a hero product demo.
+
+**`stat-card`** — big-number stat card (quests)
+- Background `{colors.primary}` (Blurple), white text, headline at `{typography.display-md}`, `{rounded.xl}`, padding `{spacing.xxl}`.
+
+**`step-card`** — numbered step panel (1/2/3 process)
+- Background `{colors.magenta}` gradient, white text, label at `{typography.heading-sm}`, `{rounded.lg}`, padding `{spacing.xl}`.
+
+**`cta-band`** — full-bleed Blurple CTA band
+- Background `{colors.primary}`, white headline at `{typography.display-md}`, `{rounded.xl}`, padding `{spacing.section}`, with a `button-white` or `button-green` CTA.
+
+**`marquee-band`** — scrolling all-caps marquee ("PLAY · CHAT · HANG OUT")
+- Background `{colors.primary}`, white display text at `{typography.display-lg}`, padding `{spacing.lg}`.
+
+**`faq-accordion`** — collapsible FAQ row (nitro)
+- Background `{colors.surface-indigo}`, white text, question at `{typography.link-lg}`, `{rounded.lg}`, padding `{spacing.xl}`.
 
 ### Inputs & Forms
 
-**`search-field`** — Masthead search input
-- White `{colors.surface}` field, `{colors.ink}` text in `{typography.body}`, `{rounded.xs}` corners, 1px `{colors.hairline}` border, ~20px tall, paired with an "All" category dropdown and an amber Go chip.
+> Discord's marketing pages surface no standalone text inputs; forms route to the app. The kit-mirror `ex-*` form surfaces below model inputs against the brand's `{rounded.lg}` surfaces and `{colors.surface-indigo}` fills.
 
-**`text-input`** — Generic text field
-- Same chassis as `search-field`: white fill, `{colors.ink}` text, `{rounded.xs}`, `{colors.hairline}` 1px border, `{spacing.xs}` padding. Used in the Login form (Username / Password / E-mail), news-archive keyword, and date fields.
+### Navigation
 
-**`select-dropdown`** — Native select ("Click to choose")
-- A white `{colors.surface}` field with `{colors.ink}` text in `{typography.body}`, `{rounded.xs}` corners, and a hard 1px `{colors.carbon}` border (sharper than the inputs) closing on a beveled native dropdown-chevron button at the right edge. ~24px tall, `{spacing.xs}` padding. Used for the Register form's Month / Year pickers.
+**`nav-bar`** — dark top navigation
+- Indigo `{colors.canvas}` bar, white `{colors.ink}` links at `{typography.link}`, padding `{spacing.md} {spacing.xl}`. Slots: Discord logo · text links · "Login" · a Blurple/green Download CTA. Collapses to logo + hamburger on mobile.
 
-**`field-label`** — Inline form label
-- A bold `{colors.ink}` label in `{typography.link}` (Arial Bold 12px) sitting left of its input (Username, Password, E-mail, Month, Year). `{rounded.none}`, `{spacing.xxs}` padding.
+**`footer`** — dark link footer
+- Indigo `{colors.canvas}`, white links at `{typography.link}`, padding `{spacing.section}`, organized into multi-column link groups above a giant "Discord" wordmark.
 
-**`radio-option`** — Poll radio button
-- A 12px white `{rounded.full}` radio dot with a `{colors.hairline}` ring, paired with `{typography.body}` option text. Used in the Player's Poll.
+### Signature Components
 
-**`form-panel`** — Form container (Login / Register)
-- A `{colors.platinum}` light-gray `{rounded.md}` panel holding a form, capped by a `{components.section-label-bar}` header (≡ LOG IN / ≡ REGISTER). `{spacing.lg}` interior. The Login page pairs two side by side.
+**`pricing-table`** — nitro plan comparison table
+- Raised-indigo `{colors.surface-indigo}` surface, body text at `{typography.body}`, `{rounded.lg}`, padding `{spacing.xl}`. Two plan columns (Nitro Basic / Nitro) with the popular tier carrying a `{colors.magenta}` badge, each row ending in a `button-primary` "Subscribe".
 
-**`dotted-divider`** — Dotted hairline rule
-- A 1px dotted `{colors.muted-indigo}` separator rule used between form sub-sections (the "Note:" line, "Forgot Your Password?"). A recurring Y2K-chrome detail — dotted rather than solid.
+**`game-rank-feature`** — top-ranked game card (trending-games #1/#2/#3)
+- Raised-indigo `{colors.surface-indigo}` card, large media, rank number + title at `{typography.heading-sm}`, `{rounded.lg}`, padding `{spacing.md}`.
 
-### Cards & Panels
+**`game-rank-row`** — ranked game list row
+- Raised-indigo `{colors.surface-indigo}`, body text at `{typography.body}`, `{rounded.md}`, padding `{spacing.sm} {spacing.md}`. Rank · icon · title · metadata columns.
 
-**`hero-panel`** — Photographic hero plate
-- A `{rounded.md}` beveled rectangle filled with full-bleed product photography over a page-tinted field (`{colors.lavender}` / `{colors.systems-teal}` / `{colors.games-red}`), topped with an outlined `{typography.display}` wordmark and a `{components.button-icon-arrow}` call-to-action. `{spacing.lg}` interior.
-
-**`section-label-bar`** — Panel header
-- A `{colors.canvas}` header strip with a small grid/list glyph and an uppercase `{typography.ui-label}` title ("Official News", "Featured Sites", "Player's Poll"). Sharp corners, `{spacing.sm}` padding. Caps every content module.
-
-**`news-row`** — Headline list row
-- A `{colors.platinum}` `{rounded.sm}` row with a small category icon, a `{typography.link}` headline in `{colors.ink-soft}`, and a trailing `{components.button-arrow-chip}`. `{spacing.sm}` padding. Stacked into the Official News / Other Headlines lists.
-
-**`featured-tile`** — Featured-site thumbnail
-- A `{colors.carbon}`-framed `{rounded.sm}` tile (~95×60px) holding a screenshot thumbnail with a `{typography.micro}` URL caption (e.g. www.pokemon.com). Tight `{spacing.xxs}` padding, arranged in a 2×2 grid.
-
-**`poll-panel`** — Player's Poll module
-- A `{colors.periwinkle}` raised `{rounded.md}` panel posing a question, listing `{components.radio-option}` choices, and closing with a `{components.button-submit}`. `{spacing.md}` interior.
-
-**`info-box`** — "What Is" explainer card
-- A white `{colors.surface}` `{rounded.sm}` card with an amber header tab ("What Is — Game Finder") and `{typography.body}` explanatory copy. `{spacing.md}` padding. Sits in the right rail.
-
-**`promo-card`** — Side product promo
-- A `{colors.lavender}` `{rounded.sm}` card carrying an outlined product wordmark (e.g. Game Boy Advance) over a small product render, in the right rail. `{spacing.md}` padding.
-
-**`system-tile`** — Hardware grid tile (Systems page)
-- A `{colors.periwinkle}` `{rounded.sm}` tile holding a console render over a circuit-board backdrop with an outlined system name (Nintendo 64, Super Nintendo, Game Boy). `{spacing.sm}` padding, arranged in a 2×3 grid.
-
-**`link-row-card`** — Utility link card (Systems page)
-- A white `{rounded.sm}` card with an amber label tab (Technical Help, Store Locator, Online Store), a character icon, and a one-line `{typography.body}` description. `{spacing.sm}` padding.
-
-**`calendar-widget`** — Month calendar (News page)
-- A white `{rounded.sm}` grid calendar in `{typography.micro}`, with a `{colors.carbon}` caption header (e.g. "June 01"), highlighted event dates, and a month-select dropdown. `{spacing.sm}` padding.
-
-### Badges & Footer
-
-**`esrb-badge`** — ESRB Privacy-Certified mark
-- A small `{colors.amber}` `{rounded.xs}` badge reading "ESRB — Privacy Certified" in `{typography.micro}` `{colors.carbon}`, pinned in the footer.
-
-**`esrb-rating-square`** — Game content-rating square
-- A 20px white `{rounded.xs}` square stamping the content-rating letter (E, T) in `{typography.ui-label}` `{colors.carbon}`, on each game card.
-
-**`footer-bar`** — Page footer
-- A `{colors.carbon}` chamfered slab with the "©1997–2001 Nintendo…" copyright in `{typography.micro}` `{colors.canvas-soft}`, the ESRB badge, and a privacy link. Sharp corners, `{spacing.lg}` padding.
+**`badge`** — small rounded tag / category chip
+- Background `{colors.magenta}`, white text at `{typography.link-sm}`, `{rounded.lg}`, padding `{spacing.xxs} {spacing.sm}`.
 
 ### Examples (illustrative)
 
-> Kit-mirror demonstration surfaces. Each `ex-*` entry references brand-native primitives so downstream consumers (`/preview-design`, `/generate-kit`) re-skin the same 10 surfaces consistently.
+> Auto-derived kit-mirror demonstration surfaces (`scripts/derive-examples-block.mjs`). Each `ex-*` entry references brand-native primitives so downstream consumers (`/preview-design`, `/generate-kit`) re-skin the same 10 surfaces consistently. `TO_FILL` markers indicate missing primitives — resolve in the LLM judgment pass.
 
 **`ex-pricing-tier`** — Default Pricing tier card. Re-uses feature-card chrome with brand canvas-soft surface.
 - Properties: `backgroundColor`, `textColor`, `borderColor`, `rounded`, `padding`
@@ -286,19 +249,17 @@ Hero photography fills beveled rectangles at roughly 4:1 (banner) and 16:9 propo
 ## Do's and Don'ts
 
 ### Do
-- Build every region as a **beveled plate**: a `{colors.canvas}` body with a brighter top edge and a `{colors.chrome-indigo}` shadow line beneath. The "assembled machine" feel depends on it.
-- Reserve warm color for **wayfinding only** — `{colors.nav-gold}` for nav words, `{colors.amber}` for utility/badges, `{colors.signal}` for forward/Submit. Cool chrome never carries action color.
-- Keep structural labels **uppercase Arial Bold with 0.5px tracking** (`{typography.ui-label}`) — it is the silkscreen-legend voice of the whole system.
-- Render hero wordmarks as **outlined + drop-shadowed `{typography.display}`** over full-bleed photographic fields tinted per page.
-- Use `{colors.carbon}` with halftone texture for the **command layer** (nav, right rail, footer) to separate "system controls" from "content."
-- Let panels **butt together** with thin bevel seams; density is the intended texture.
-- Default corners to **sharp/chamfered** (`{rounded.none}`); spend roundness only on the logo pill, radio dots, and circle-arrow badges.
+- Lead with the deep-indigo canvas (`{colors.canvas}`) and let the animated Blurple-to-magenta gradient carry atmosphere.
+- Reserve `{colors.green}` for the single highest-intent CTA on a page; use `{colors.primary}` Blurple for everything else action-related.
+- Shout with `{typography.display-xl}` ABC Ginto Nord in all-caps for headlines; drop hard to `{typography.body}` for copy.
+- Round generously — `{rounded.sm}`–`{rounded.lg}` on controls, `{rounded.xl}`+ on media and feature panels.
+- Frame product mockups inside `{colors.magenta}` gradient panels or `{colors.surface-indigo}` dark cards.
+- Let 3D character art and props overlap card edges to build playful depth.
 
 ### Don't
-- Don't soften every corner — turning the sharp chrome into a uniformly rounded card system erases the manufactured-faceplate identity.
-- Don't introduce a **soft blurred drop-shadow** elevation language; depth here is hard bevels and pictorial photography, not Material elevation.
-- Don't let `{colors.signal}` and `{colors.amber}` bleed into decorative use — warm color must always mean "act here."
-- Don't add accent colors outside the page-tint heroes (`{colors.systems-teal}`, `{colors.games-red}`); the steady-state chrome is strictly cool periwinkle + carbon.
-- Don't widen body copy or whitespace into an airy modern layout; the packed, fixed-canvas density is the brand.
-- Don't flatten the dual-nav structure (gold primary words over the pale secondary strip) into one bar — the layered command hierarchy is signature.
-- Don't render hero or system wordmarks as flat text; without the outline + shadow they lose the box-art reference entirely.
+- Don't flatten the canvas to a neutral grey or pure black — the indigo + gradient mesh is the brand.
+- Don't use `{colors.green}` as a general accent; it is the high-intent CTA only.
+- Don't set headlines in a timid mid-weight — display type is 700–800 ABC Ginto Nord or it loses the brand voice.
+- Don't square off media or cards; the soft `{rounded.xl}`+ geometry is core to the playful tone.
+- Don't lean on drop shadows for depth; depth comes from colour, gradient, and overlapping art.
+- Don't introduce a fourth loud accent — Blurple, green, and magenta are the full chord.

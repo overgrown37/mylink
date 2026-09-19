@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Nintendo.com (Circa 2001) | Console Hardware Web Interface",
-  description: "Official Nintendo.com circa 2001 recreated as a brushed-periwinkle console hardware machine faceplate with MyLink profile integration.",
+  title: "MyLink | Imagine a Place for Creators",
+  description: "Official creator profile & project portal redesigned in Discord's vibrant marketing aesthetic.",
 };
 
 export default function RootLayout({
@@ -12,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="ko" className="h-full antialiased bg-[#0a0d3a]">
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
