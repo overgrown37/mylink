@@ -13,11 +13,29 @@ import {
   MapPinIcon,
   ShareIcon,
   CheckIcon,
+  BoltIcon,
 } from "./Icons";
 
 interface ProfileHeaderProps {
   profile: ProfileData;
 }
+
+const getSocialStyle = (platform: SocialLink["platform"]) => {
+  switch (platform) {
+    case "github":
+      return "bg-[#18181B] text-white hover:bg-black";
+    case "twitter":
+      return "bg-[#000000] text-white";
+    case "instagram":
+      return "bg-[#FF66C4] text-black";
+    case "youtube":
+      return "bg-[#FF4D4D] text-black";
+    case "linkedin":
+      return "bg-[#00F0FF] text-black";
+    case "email":
+      return "bg-[#FFDE59] text-black";
+  }
+};
 
 const renderSocialIcon = (platform: SocialLink["platform"]) => {
   const cls = "w-5 h-5";
@@ -66,34 +84,55 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
   };
 
   return (
-    <div className="w-full relative bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl overflow-hidden transition-all duration-300">
-      {/* Banner Image with Overlay */}
-      <div className="relative h-44 sm:h-52 w-full overflow-hidden">
+    <div className="w-full relative bg-white border-[3px] border-black shadow-[6px_6px_0px_0px_#000] rounded-2xl overflow-hidden transition-all">
+      {/* Neo-brutalist Moving Ticker Tape Ribbon */}
+      <div className="bg-[#FFDE59] border-b-[3px] border-black py-1.5 overflow-hidden select-none font-black text-xs uppercase tracking-widest text-black flex items-center">
+        <div className="animate-marquee whitespace-nowrap flex items-center gap-6">
+          <span>⚡ OFFICIAL MYLINK PROFILE</span>
+          <span>✦</span>
+          <span>AVAILABLE FOR WORK & PROJECTS</span>
+          <span>✦</span>
+          <span>{profile.name}</span>
+          <span>✦</span>
+          <span>VIBE CODING & WEB TECH</span>
+          <span>✦</span>
+          <span>⚡ OFFICIAL MYLINK PROFILE</span>
+          <span>✦</span>
+          <span>AVAILABLE FOR WORK & PROJECTS</span>
+          <span>✦</span>
+          <span>{profile.name}</span>
+          <span>✦</span>
+          <span>VIBE CODING & WEB TECH</span>
+          <span>✦</span>
+        </div>
+      </div>
+
+      {/* Banner Image with Black Frame */}
+      <div className="relative h-44 sm:h-52 w-full overflow-hidden border-b-[3px] border-black bg-zinc-100">
         <Image
           src={profile.bannerUrl}
-          alt="Profile Banner"
+          alt="Cover Banner"
           fill
           priority
           sizes="(max-width: 768px) 100vw, 720px"
-          className="object-cover object-center transform hover:scale-105 transition-transform duration-700 ease-out"
+          className="object-cover object-center grayscale-[20%] contrast-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
-        {/* Share Button (Top-Right) */}
+        {/* Floating Brutalist Share Button */}
         <button
           onClick={handleShare}
           type="button"
           aria-label="프로필 공유하기"
-          className="absolute top-4 right-4 z-10 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 transition-all duration-200 hover:scale-105 active:scale-95 shadow-md"
+          className="absolute top-4 right-4 z-10 flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-black text-xs bg-[#FFDE59] hover:bg-[#FFE600] text-black border-2 border-black shadow-[3px_3px_0px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#000] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-150 cursor-pointer"
         >
           {copied ? (
             <>
-              <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
-              <span>복사 완료!</span>
+              <CheckIcon className="w-4 h-4 text-black" />
+              <span>복사됨!</span>
             </>
           ) : (
             <>
-              <ShareIcon className="w-3.5 h-3.5" />
+              <ShareIcon className="w-4 h-4 text-black" />
               <span>공유하기</span>
             </>
           )}
@@ -102,10 +141,13 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
 
       {/* Main Profile Info Section */}
       <div className="px-5 sm:px-8 pb-7 pt-0 flex flex-col items-center text-center">
-        {/* Avatar with Negative Margin and Gradient Ring */}
-        <div className="relative -mt-16 sm:-mt-20 mb-3 group">
-          <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 blur-sm opacity-80 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
-          <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white dark:border-zinc-900 shadow-2xl bg-zinc-100 dark:bg-zinc-800">
+        {/* Avatar with Offset Neo Drop Block */}
+        <div className="relative -mt-16 sm:-mt-20 mb-3">
+          {/* Offset colorful background shadow block */}
+          <div className="absolute inset-0 bg-[#FF66C4] border-[3px] border-black rounded-2xl rotate-[-3deg] shadow-[4px_4px_0px_0px_#000] translate-x-1 translate-y-1" />
+
+          {/* Actual Avatar Frame */}
+          <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden border-[3px] border-black bg-white z-10">
             <Image
               src={profile.avatarUrl}
               alt={profile.name}
@@ -115,68 +157,76 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
               className="object-cover"
             />
           </div>
-          {/* Active Status Indicator */}
-          {profile.status.available && (
-            <span
-              title="활동 중"
-              className="absolute bottom-1 right-1 w-5 h-5 bg-emerald-500 border-2 border-white dark:border-zinc-900 rounded-full shadow-md flex items-center justify-center"
-            >
-              <span className="w-2 h-2 bg-white rounded-full animate-ping opacity-75" />
-            </span>
-          )}
+
+          {/* Neo Badge on Avatar */}
+          <div className="absolute -bottom-2 -right-2 z-20 bg-[#70FFAF] text-black border-2 border-black rounded-lg p-1.5 shadow-[2px_2px_0px_0px_#000] rotate-[6deg]">
+            <BoltIcon className="w-4 h-4 text-black" />
+          </div>
         </div>
 
         {/* Name and Handle */}
-        <div className="flex items-center gap-1.5">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
+        <div className="mt-1 flex flex-col items-center">
+          <h1 className="text-2xl sm:text-3xl font-black text-black tracking-tight">
             {profile.name}
           </h1>
-        </div>
-        <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 mt-0.5">
-          {profile.handle}
-        </p>
 
-        {/* Tagline Badge */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 mt-2.5 rounded-full bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200/60 dark:border-indigo-800/60 text-xs font-semibold text-indigo-700 dark:text-indigo-300">
-          <span>{profile.tagline}</span>
+          <div className="mt-1 flex items-center gap-2">
+            <span className="inline-block bg-[#00F0FF] border-2 border-black text-black font-extrabold text-xs px-2.5 py-0.5 rounded-md shadow-[2px_2px_0px_0px_#000] rotate-[-1deg]">
+              {profile.handle}
+            </span>
+            <span className="inline-block bg-[#70FFAF] border-2 border-black text-black font-extrabold text-[11px] px-2 py-0.5 rounded-md shadow-[2px_2px_0px_0px_#000] rotate-[1deg]">
+              VERIFIED ✦
+            </span>
+          </div>
+        </div>
+
+        {/* Tagline Sticker */}
+        <div className="mt-3.5 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#FFDE59] border-2 border-black font-black text-xs sm:text-sm text-black shadow-[3px_3px_0px_0px_#000] rotate-[-0.5deg]">
+          <span>⚡ {profile.tagline}</span>
         </div>
 
         {/* Location & Status Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mt-3 text-xs text-zinc-500 dark:text-zinc-400">
-          <span className="flex items-center gap-1">
-            <MapPinIcon className="w-3.5 h-3.5 text-zinc-400" />
+        <div className="flex flex-wrap items-center justify-center gap-2.5 mt-3.5">
+          <span className="inline-flex items-center gap-1 text-xs font-bold text-black bg-zinc-100 border-2 border-black px-2.5 py-1 rounded-lg shadow-[2px_2px_0px_0px_#000]">
+            <MapPinIcon className="w-3.5 h-3.5 text-black" />
             {profile.location}
           </span>
-          <span className="w-1 h-1 rounded-full bg-zinc-300 dark:bg-zinc-700" />
-          <span className="flex items-center gap-1.5 font-medium text-emerald-600 dark:text-emerald-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="inline-flex items-center gap-1.5 text-xs font-black text-black bg-[#70FFAF] border-2 border-black px-2.5 py-1 rounded-lg shadow-[2px_2px_0px_0px_#000]">
+            <span className="w-2 h-2 rounded-full bg-black animate-ping" />
             {profile.status.text}
           </span>
         </div>
 
-        {/* Bio */}
-        <p className="text-sm text-zinc-600 dark:text-zinc-300 max-w-lg mt-4 leading-relaxed whitespace-pre-line font-normal">
-          {profile.bio}
-        </p>
-
-        {/* Quick Stats Grid */}
-        <div className="grid grid-cols-3 gap-2 sm:gap-4 w-full max-w-sm mt-5 pt-5 border-t border-zinc-100 dark:border-zinc-800/80">
-          {profile.stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="flex flex-col items-center p-2 rounded-xl bg-zinc-50/70 dark:bg-zinc-800/40 border border-zinc-100 dark:border-zinc-800/50"
-            >
-              <span className="text-base sm:text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                {stat.value}
-              </span>
-              <span className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">
-                {stat.label}
-              </span>
-            </div>
-          ))}
+        {/* Bio in framed retro callout box */}
+        <div className="w-full max-w-lg mt-4 p-3.5 bg-[#FFFDF0] border-2 border-black rounded-xl shadow-[3px_3px_0px_0px_#000] text-left">
+          <p className="text-xs sm:text-sm font-semibold text-black leading-relaxed whitespace-pre-line">
+            {profile.bio}
+          </p>
         </div>
 
-        {/* Social Icon Bar */}
+        {/* Chunky Stats Grid */}
+        <div className="grid grid-cols-3 gap-2.5 sm:gap-3.5 w-full max-w-md mt-5">
+          {profile.stats.map((stat, idx) => {
+            const bgColors = ["bg-[#FF66C4]", "bg-[#70FFAF]", "bg-[#00F0FF]"];
+            const bg = bgColors[idx % bgColors.length];
+
+            return (
+              <div
+                key={stat.label}
+                className={`flex flex-col items-center p-2.5 rounded-xl ${bg} border-2 border-black shadow-[3px_3px_0px_0px_#000]`}
+              >
+                <span className="text-base sm:text-lg font-black text-black">
+                  {stat.value}
+                </span>
+                <span className="text-[10px] sm:text-xs font-bold text-black mt-0.5 uppercase tracking-wide">
+                  {stat.label}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Tactile Social Buttons Row */}
         <div className="flex items-center justify-center gap-2.5 sm:gap-3 mt-6 flex-wrap">
           {profile.socials.map((social) => (
             <a
@@ -186,7 +236,9 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
               rel="noopener noreferrer"
               aria-label={social.label}
               title={social.label}
-              className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800/90 text-zinc-700 dark:text-zinc-200 hover:text-white hover:bg-gradient-to-tr hover:from-indigo-600 hover:to-purple-600 dark:hover:from-indigo-500 dark:hover:to-purple-500 hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95 transition-all duration-200 border border-zinc-200/60 dark:border-zinc-700/60"
+              className={`p-3 rounded-xl border-2 border-black shadow-[3px_3px_0px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#000] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-150 ${getSocialStyle(
+                social.platform
+              )}`}
             >
               {renderSocialIcon(social.platform)}
             </a>

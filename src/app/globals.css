@@ -1,26 +1,117 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-canvas: #7a8aba;
+  --color-periwinkle: #8ba1d4;
+  --color-sky: #9fbee7;
+  --color-lavender: #acace7;
+  --color-ice: #c0d5e6;
+  --color-chrome-indigo: #3d4f97;
+  --color-muted-indigo: #60619c;
+  --color-platinum: #dedede;
+  --color-carbon: #21242e;
+  --color-primary: #e60012;
+  --color-signal: #f68d1f;
+  --color-amber: #ecab37;
+  --color-nav-gold: #e48600;
+  --color-systems-teal: #206479;
+  --color-games-red: #a7282b;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: #55628b;
+  background-image: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    linear-gradient(225deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    linear-gradient(315deg, rgba(255, 255, 255, 0.05) 25%, #55628b 25%);
+  background-position: 10px 0, 10px 0, 0 0, 0 0;
+  background-size: 20px 20px;
+  background-repeat: repeat;
+  color: #21242e;
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Halftone Speaker Grille Texture for Carbon Navy */
+.carbon-halftone {
+  background-color: #21242e;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+/* Bevel Plate Simulation (Injection-Molded Plastic Chrome) */
+.plate-bevel {
+  border-top: 1.5px solid rgba(255, 255, 255, 0.75);
+  border-left: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-right: 1.5px solid #3d4f97;
+  border-bottom: 2px solid #3d4f97;
+}
+
+/* Raised Plate (Elevated chip) */
+.chip-bevel {
+  border-top: 1.5px solid rgba(255, 255, 255, 0.9);
+  border-left: 1.5px solid rgba(255, 255, 255, 0.6);
+  border-right: 1.5px solid #233062;
+  border-bottom: 2px solid #233062;
+}
+
+/* Inset Bevel (Recessed into chassis) */
+.inset-bevel {
+  border-top: 2px solid #3d4f97;
+  border-left: 2px solid #3d4f97;
+  border-right: 1px solid rgba(255, 255, 255, 0.6);
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Chamfered (45° Cut Corner) Geometry */
+.chamfer-lg {
+  clip-path: polygon(
+    10px 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% calc(100% - 10px),
+    calc(100% - 10px) 100%,
+    10px 100%,
+    0 calc(100% - 10px),
+    0 10px
+  );
+}
+
+.chamfer-sm {
+  clip-path: polygon(
+    6px 0,
+    calc(100% - 6px) 0,
+    100% 6px,
+    100% calc(100% - 6px),
+    calc(100% - 6px) 100%,
+    6px 100%,
+    0 calc(100% - 6px),
+    0 6px
+  );
+}
+
+/* Game Box-Art Display Wordmark */
+.boxart-wordmark {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+  -webkit-text-stroke: 1.5px #21242e;
+  text-shadow: 2px 2px 0px #000000, 3px 3px 0px #3d4f97;
+}
+
+/* Chrome Silkscreen Upper Label */
+.chrome-label {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Dotted Hairline Divider */
+.dotted-divider {
+  border-bottom: 1px dotted #60619c;
 }

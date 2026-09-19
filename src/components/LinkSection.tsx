@@ -27,17 +27,18 @@ export default function LinkSection({ links }: LinkSectionProps) {
   }, [links, activeCategory]);
 
   return (
-    <section className="w-full mt-6 space-y-4">
+    <section className="w-full mt-7 space-y-4">
       {/* Category Filter and Count Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-1">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-            링크 및 활동 목록
+          <span className="inline-block bg-black text-white border-2 border-black font-black text-xs px-3 py-1 rounded-lg shadow-[2px_2px_0px_0px_#FFDE59]">
+            EXPLORE LINKS ⚡
           </span>
-          <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
-            ({filteredLinks.length})
+          <span className="inline-block bg-[#FF66C4] text-black border-2 border-black font-black text-xs px-2 py-0.5 rounded-md shadow-[2px_2px_0px_0px_#000]">
+            {filteredLinks.length}개
           </span>
         </div>
+
         <CategoryFilter
           currentCategory={activeCategory}
           onSelectCategory={setActiveCategory}
@@ -46,13 +47,13 @@ export default function LinkSection({ links }: LinkSectionProps) {
       </div>
 
       {/* Cards List */}
-      <div className="space-y-3.5">
+      <div className="space-y-4">
         {filteredLinks.map((link) => (
           <LinkCard key={link.id} link={link} />
         ))}
 
         {filteredLinks.length === 0 && (
-          <div className="text-center py-12 px-4 rounded-2xl bg-white/40 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-zinc-800/60 text-zinc-500">
+          <div className="text-center py-12 px-4 rounded-2xl bg-white border-[3px] border-black shadow-[4px_4px_0px_0px_#000] font-black text-black">
             해당 카테고리에 등록된 링크가 없습니다.
           </div>
         )}

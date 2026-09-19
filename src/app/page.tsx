@@ -1,58 +1,87 @@
-import React from "react";
-import ProfileHeader from "@/components/ProfileHeader";
-import LinkSection from "@/components/LinkSection";
+"use client";
+
+import React, { useState } from "react";
+import Masthead from "@/components/nintendo/Masthead";
+import DualNavBar, { NavTab } from "@/components/nintendo/DualNavBar";
+import LeftRailTabs from "@/components/nintendo/LeftRailTabs";
+import HeroPanel from "@/components/nintendo/HeroPanel";
+import NewsListPanel from "@/components/nintendo/NewsListPanel";
+import FeaturedSitesGrid from "@/components/nintendo/FeaturedSitesGrid";
+import PlayersPollPanel from "@/components/nintendo/PlayersPollPanel";
+import RightActionRail from "@/components/nintendo/RightActionRail";
+import FooterBar from "@/components/nintendo/FooterBar";
+import SystemsGrid from "@/components/nintendo/SystemsGrid";
 import { profileData } from "@/data/profile";
 
 export default function Home() {
+  const [currentTab, setCurrentTab] = useState<NavTab>("home");
+  const [activeMessage, setActiveMessage] = useState<string | null>(null);
+
+  const handleRailTabSelect = (tabName: string) => {
+    setActiveMessage(`Selected Rail Module: ${tabName} (Circa 2001 Archive)`);
+    setTimeout(() => setActiveMessage(null), 3000);
+  };
+
   return (
-    <main className="relative min-h-screen bg-slate-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col items-center px-4 py-8 sm:py-12 selection:bg-indigo-500 selection:text-white overflow-x-hidden">
-      {/* Decorative ambient glowing gradient orbs in background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[550px] sm:w-[700px] h-[450px] bg-gradient-to-tr from-indigo-500/20 via-purple-500/20 to-pink-500/15 dark:from-indigo-600/15 dark:via-purple-600/15 dark:to-pink-600/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 -right-32 w-[350px] h-[350px] bg-indigo-400/10 dark:bg-indigo-600/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 -left-32 w-[350px] h-[350px] bg-purple-400/10 dark:bg-purple-600/10 rounded-full blur-3xl" />
-      </div>
+    <main className="min-h-screen py-4 sm:py-8 px-2 sm:px-4 flex flex-col items-center justify-start selection:bg-[#f68d1f] selection:text-white">
+      {/* Outer Shell Wrapper with Left Rail & Main Console Chassis */}
+      <div className="w-full max-w-[830px] flex items-start justify-center relative">
+        {/* Left Rail Vertically Rotated Carbon Tabs (Desktop) */}
+        <LeftRailTabs onSelectRail={handleRailTabSelect} />
 
-      <div className="w-full max-w-xl mx-auto flex flex-col items-center">
-        {/* Top Mini Brand Bar */}
-        <div className="w-full flex items-center justify-between pb-5 px-1">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-500" />
-            </span>
-            <span className="text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
-              MyLink
-            </span>
+        {/* Main Machine Faceplate Chassis (Brushed Periwinkle #7a8aba with Chamfered Corners) */}
+        <div className="w-full bg-[#7a8aba] plate-bevel shadow-[0_12px_32px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden relative z-10 border-2 border-[#3d4f97]">
+          {/* Top Edge Highlight Accent */}
+          <div className="w-full h-1 bg-gradient-to-r from-white/70 via-white/30 to-transparent" />
+
+          {/* Active Notification Banner if any */}
+          {activeMessage && (
+            <div className="bg-[#f68d1f] text-white px-3 py-1 text-xs font-black text-center border-b border-[#3d4f97] animate-pulse">
+              ⚡ {activeMessage}
+            </div>
+          )}
+
+          {/* 1. Masthead: Mario Mascot Speech Bubble + Search Bar */}
+          <Masthead />
+
+          {/* 2. Dual Nav Bars: Carbon Primary Bar + Pale Sky Secondary Strip */}
+          <DualNavBar currentTab={currentTab} onSelectTab={setCurrentTab} />
+
+          {/* 3. Main Body Container */}
+          <div className="p-2 sm:p-3 flex flex-col gap-3">
+            {/* Hero Panel (Page-Specific Accent Tint) */}
+            <HeroPanel currentTab={currentTab} />
+
+            {/* Dense 2-Column Grid: 2/3 Content Column + 1/3 Right Rail */}
+            <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-3 items-start">
+              {/* Left 2/3 Content Area */}
+              <div className="lg:col-span-2 flex flex-col gap-3">
+                {currentTab === "systems" ? (
+                  <SystemsGrid />
+                ) : (
+                  <>
+                    {/* Official News & User Project Links */}
+                    <NewsListPanel userLinks={profileData.links} />
+
+                    {/* 2x2 Featured Sites Grid */}
+                    <FeaturedSitesGrid />
+
+                    {/* Interactive Player's Poll */}
+                    <PlayersPollPanel />
+                  </>
+                )}
+              </div>
+
+              {/* Right 1/3 Action Rail */}
+              <div className="lg:col-span-1">
+                <RightActionRail profile={profileData} />
+              </div>
+            </div>
+
+            {/* 4. Footer Bar: Carbon Halftone Slab + ESRB Mark */}
+            <FooterBar />
           </div>
-
-          <span className="text-[11px] font-medium text-zinc-400 dark:text-zinc-500 bg-zinc-200/50 dark:bg-zinc-800/50 px-2.5 py-1 rounded-full border border-zinc-200/60 dark:border-zinc-700/60">
-            반응형 프로필 링크
-          </span>
         </div>
-
-        {/* Profile Card with Banner & Avatar */}
-        <ProfileHeader profile={profileData} />
-
-        {/* Filterable Links with Thumbnails */}
-        <LinkSection links={profileData.links} />
-
-        {/* Footer */}
-        <footer className="mt-14 pb-8 text-center text-xs text-zinc-400 dark:text-zinc-500 flex flex-col items-center gap-1.5">
-          <p className="flex items-center gap-1.5 font-medium">
-            <span>Powered by</span>
-            <span className="font-semibold text-zinc-700 dark:text-zinc-300">
-              Next.js
-            </span>
-            <span>&</span>
-            <span className="font-semibold text-zinc-700 dark:text-zinc-300">
-              Tailwind CSS
-            </span>
-          </p>
-          <p className="text-[11px] opacity-80">
-            © {new Date().getFullYear()} {profileData.name}. All rights reserved.
-          </p>
-        </footer>
       </div>
     </main>
   );
