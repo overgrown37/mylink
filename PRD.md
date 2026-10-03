@@ -2,11 +2,13 @@
 
 ---
 
-| 문서 버전 | v1.3.0 (사용자 시나리오 추가) | 작성일자 | 2026-09-26 |
+| 문서 버전 | v1.6.0 (Tailwind CSS 스타일링 표준 단일화) | 작성일자 | 2026-10-03 |
 | :--- | :--- | :--- | :--- |
 | **제품명** | 마이링크 (MyLink) | **형태** | Web SaaS (링크트리 클론 서비스) |
-| **기술 기반** | Next.js (App Router), TypeScript, Tailwind CSS, Zustand | **데이터 저장소** | Mock Data & 브라우저 LocalStorage (Zustand Persist) |
-| **개발 전략** | 단계별 점진적 학습 개발 (Phase 1: 프로필 페이지 집중) | **문서 상태** | 확정 (Approved) |
+| **기술 기반** | Next.js (App Router), TypeScript, Tailwind CSS v4, shadcn/ui, Zustand | **데이터 저장소** | Mock Data & 브라우저 LocalStorage (Zustand Persist) |
+| **개발 전략** | 단계별 점진적 학습 개발 (Phase 1: 프로필 페이지 집중) | **UI/디자인 시스템** | shadcn/ui + `design.md` 비주얼 가이드라인 |
+| **스타일 표준** | Tailwind CSS 100% 단일화 (CSS 모듈 배제) | **참조 디자인 문서** | [`design.md`](file:///c:/Users/anqh3/Documents/Vide_Coding_Projects/mylink/design.md) (디스코드 마케팅 무드 비주얼 가이드) |
+| **문서 상태** | 확정 (Approved) | | |
 
 ---
 
@@ -136,6 +138,31 @@
   - **상태(State)**: `profile` (이름, 바이오, 아바타, 테마 ID, 소셜 링크, 링크 목록), `hasHydrated` (로딩 완료 플래그)
   - **액션(Actions)**: `setTheme(themeId)`, `updateProfile(data)`, `resetToMockData()`
 
+### 4.3 UI 및 디자인 시스템 전략: shadcn/ui + design.md 통합
+- **기본 철학 및 개발 원칙**: 
+  - 컴포넌트 아키텍처 및 인터랙션은 **[shadcn/ui](https://ui.shadcn.com/)**를 표준으로 사용하고,
+  - 시각적 테마, 컬러 팔레트, 타이포그래피, 모션 및 형태학적 감성은 **[`design.md`](file:///c:/Users/anqh3/Documents/Vide_Coding_Projects/mylink/design.md)** 디자인 문서를 전적으로 참고하여 반영합니다.
+- **스타일링 표준화 규칙 (Tailwind CSS 100% 통일)**:
+  - 모든 컴포넌트 및 페이지 스타일은 **CSS 모듈(`*.module.css`)을 배제하고 Tailwind CSS 유틸리티 클래스로 통일**합니다.
+  - 이를 통해 스타일 파편화를 막고 shadcn/ui와의 높은 호환성 및 테마 토큰(`src/app/globals.css`)의 일관성을 극대화합니다.
+- **design.md 핵심 비주얼 가이드라인 반영 규칙**:
+  1. **브랜드 컬러 및 서피스 (Color Palette)**:
+     - **Canvas**: 딥 인디고 (`#0a0d3a`) 베이스 및 부드러운 그라디언트 메쉬
+     - **Brand Primary**: 시그니처 블러플(Blurple `#5865f2`)을 주요 버튼 및 액션 강조에 활용
+     - **Accents**: 높은 인터랙션 유도를 위한 일렉트릭 그린(`#35ed7e`), 활기찬 분위기의 비브런트 마젠타(`#ec48bd`)
+     - **Surfaces**: 레이즈드 인디고 (`#1e2353`), 오닉스 (`#23272a`) 카드로 깊이감 표현
+  2. **형태 및 지오메트리 (Geometry & Radius)**:
+     - shadcn/ui의 컴포넌트 라운딩에 부드럽고 풍부한 반경(`rounded-xl`, `rounded-2xl`, 12px~16px)을 적용하여 친근하고 완성도 높은 감성 연출
+  3. **그림자 및 모션 (Shadow & Movement)**:
+     - 디퓨즈 바이올렛 틴트 플로팅 섀도우(`discord-float-shadow`) 및 섬세한 스케일 인터랙션 적용
+- **컴포넌트 구현 매핑 (shadcn/ui 기반)**:
+  - **프로필 아바타**: `Avatar`, `AvatarImage`, `AvatarFallback` (풍부한 라운딩 및 플로팅 섀도우)
+  - **버튼 시스템**: `Button` (기본 shadcn variant에 `design.md`의 Blurple / Green / Ghost 스타일 테마 주입)
+  - **링크 카드**: `Card` (레이즈드 인디고 / 오닉스 서피스 + 호버 시 Blurple/Magenta 보더 하이라이트)
+  - **섹션 구분**: `Separator` (마젠타/블러플 틴트의 정갈한 라인)
+  - **뱃지 & 태그**: `Badge` (마젠타 및 일렉트릭 그린 악센트 뱃지)
+  - **아이콘 시스템**: `lucide-react` (Instagram, Youtube, Github, Share2, ExternalLink 등)
+
 ---
 
 ## 5. 종합 기능 목록 (Feature List Matrix)
@@ -172,29 +199,31 @@
 ## 6. Phase 1 세부 구현 명세 (현재 집중 개발 범위)
 
 ### 6.1 프로필 헤더 (Profile Header)
-- **아바타**: 둥근 모서리 또는 원형 아바타 이미지 (기본 Fallback 이미지 지원)
-- **이름**: 가독성 높은 굵은 타이포그래피
-- **핸들 태그**: `@username` 형태의 배지 스타일 표기
-- **바이오 (Bio)**: 줄바꿈이 지원되는 소개글
+- **아바타 (`Avatar`, `AvatarImage`, `AvatarFallback`)**: 96×96px 원형 아바타, 이미지 로딩 실패 시 이니셜 Fallback 자동 제공
+- **이름**: 가독성 높은 볼드 타이포그래피 (`text-xl font-bold tracking-tight`)
+- **핸들 태그 (`Badge`)**: `@username` 형태의 `Badge (variant="secondary")` 배지 표기
+- **바이오 (Bio)**: 최대 2~3줄 줄바꿈이 지원되는 소개글 (`text-sm text-muted-foreground`)
 
 ### 6.2 소셜 아이콘 바 (Social Icons Bar)
-- 지원 플랫폼: Instagram, YouTube, GitHub, Twitter/X, LinkedIn, Email
-- URL 값이 존재하는 플랫폼만 아이콘 버튼으로 자동 렌더링
-- 호버 시 미세한 스케일 업 인터랙션 제공
+- 지원 플랫폼: Instagram, YouTube, GitHub, Twitter/X, LinkedIn, Email (`lucide-react` 아이콘 매핑)
+- **버튼 스타일 (`Button`)**: `variant="ghost" size="icon"` 형태의 원형 터치 버튼 (`rounded-full h-10 w-10`)
+- URL 값이 존재하는 플랫폼만 필터링하여 가로 중앙 정렬 플렉스 박스로 렌더링
 
 ### 6.3 링크 & 섹션 리스트 (Links & Headers)
-- **섹션 헤더**: 연관된 링크들을 그룹화하는 소제목 텍스트
-- **링크 버튼**:
-  - 누르기 편한 모바일 친화적 카드 높이 (최소 50px 이상)
-  - 호버 시 배경/보더 전환 및 외부 링크 이동 화살표 아이콘 노출
-  - 클릭 시 보안 속성(`rel="noopener noreferrer"`)과 함께 새 창 열림
+- **섹션 헤더 (`Separator` + 텍스트)**: 연관된 링크들을 그룹화하는 소제목 텍스트 및 구분선
+- **링크 카드 (`Card` / `Button`)**:
+  - `Card` 또는 `Button (variant="outline" size="lg")` 기반의 모바일 친화적 높이 (최소 52px)
+  - 호버/탭 시 부드러운 스케일업 및 배경 강조 (`hover:bg-accent hover:border-foreground/20 transition-all`)
+  - 우측에 `ExternalLink` 아이콘을 배치하여 외부 링크임을 명확히 인지
+  - 클릭 시 보안 속성(`rel="noopener noreferrer"`)과 함께 새 창 이동
 
 ### 6.4 5가지 테마 프리셋 (Theme Presets)
-- `minimal-light`: 화이트 배경 + 심플 보더 + 블랙 텍스트
-- `dark-mode`: 딥 다크 배경 + 다크 슬레이트 카드 + 화이트 텍스트
-- `vibrant-gradient`: 퍼플/바이올렛 그라디언트 + 반투명 글래스모피즘 카드
-- `pastel-peach`: 따뜻한 소프트 피치 크림 + 부드러운 캡슐 버튼
-- `neo-brutal`: 웜 옐로우 + 두꺼운 3px 블랙 보더 + 하드 드롭 섀도우
+- `design.md`의 비주얼 정체성과 shadcn/ui CSS 변수 토큰(`--background`, `--foreground`, `--card`, `--border` 등)을 연계한 5종 스타일:
+  - `discord-signature` (대표 테마): `design.md` 기반의 딥 인디고 캔버스 + Blurple 버튼 + 마젠타/그린 악센트 + 플로팅 섀도우
+  - `minimal-light`: 화이트 배경 + 정갈한 보더 + 다크 텍스트 (shadcn 기본 Light)
+  - `dark-mode`: 딥 징크/차콜 배경 + 톤다운 카드 + 화이트 텍스트 (shadcn 기본 Dark)
+  - `pastel-peach`: 따뜻한 소프트 피치 크림 + 부드러운 캡슐 버튼
+  - `neo-brutal`: 웜 옐로우 + 두꺼운 3px 블랙 보더 + 하드 드롭 섀도우
 
 ---
 
@@ -224,9 +253,9 @@ interface SocialLinks {
 
 // 3. 지원 테마 ID
 type ThemeId = 
+  | 'discord-signature'
   | 'minimal-light' 
   | 'dark-mode' 
-  | 'vibrant-gradient' 
   | 'pastel-peach' 
   | 'neo-brutal';
 

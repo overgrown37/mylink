@@ -1,0 +1,140 @@
+{
+  "status": "success",
+  "statusCode": 200,
+  "message": "사용자 프로필 및 링크 목록을 성공적으로 조회했습니다.",
+  "timestamp": "2026-10-03T15:45:00.000Z",
+  "data": {
+    "profile": {
+      "id": "usr_948201a4b",
+      "displayName": "김무성 | Vibe Coder",
+      "handle": "@mooseong_dev",
+      "bio": "아이디어를 코드로 실현하는 풀스택 개발자입니다 🚀\n포트폴리오와 주요 활동 링크를 모았습니다.",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
+      "themeId": "discord-signature",
+      "socials": {
+        "github": "https://github.com",
+        "instagram": "https://instagram.com",
+        "youtube": "https://youtube.com",
+        "twitter": "https://x.com",
+        "linkedin": "https://linkedin.com",
+        "email": "mailto:hello@example.com"
+      },
+      "stats": {
+        "viewCount": 1420,
+        "totalClicks": 856
+      },
+      "updatedAt": "2026-10-03T15:45:00.000Z"
+    },
+    "links": [
+      {
+        "id": "header-1",
+        "type": "header",
+        "title": "📌 주요 프로젝트 (Featured Projects)",
+        "order": 1,
+        "category": "projects"
+      },
+      {
+        "id": "link-1",
+        "type": "link",
+        "title": "FlowNote - AI 스마트 노트 서비스",
+        "subtitle": "생각을 구조화하고 실시간 AI 어시스턴트가 요약해주는 생산성 SaaS",
+        "url": "https://github.com",
+        "order": 2,
+        "icon": "🚀",
+        "badge": "HOT",
+        "isFeatured": true,
+        "clickCount": 384,
+        "category": "projects"
+      },
+      {
+        "id": "link-2",
+        "type": "link",
+        "title": "PixelCraft - 모던 웹 디자인 시스템",
+        "subtitle": "shadcn/ui & Tailwind CSS 기반의 오픈소스 UI 컴포넌트 라이브러리",
+        "url": "https://github.com",
+        "order": 3,
+        "icon": "🎨",
+        "badge": "Open Source",
+        "isFeatured": false,
+        "clickCount": 192,
+        "category": "projects"
+      },
+      {
+        "id": "header-2",
+        "type": "header",
+        "title": "📝 최신 기술 블로그 & 아티클",
+        "order": 4,
+        "category": "articles"
+      },
+      {
+        "id": "link-3",
+        "type": "link",
+        "title": "Next.js 15와 React 19 마이그레이션 실전 가이드",
+        "subtitle": "서버 컴포넌트, 캐싱 전략 변경점과 프로덕션 최적화 노하우 총정리",
+        "url": "https://velog.io",
+        "order": 5,
+        "icon": "⚡",
+        "badge": "NEW",
+        "isFeatured": false,
+        "clickCount": 147,
+        "category": "articles"
+      },
+      {
+        "id": "link-4",
+        "type": "link",
+        "title": "좋은 UI/UX를 만드는 디테일의 차이 5가지",
+        "subtitle": "마이크로 인터랙션과 반응형 레이아웃으로 완성도를 높이는 실전 팁",
+        "url": "https://velog.io",
+        "order": 6,
+        "icon": "✨",
+        "isFeatured": false,
+        "clickCount": 89,
+        "category": "articles"
+      },
+      {
+        "id": "header-3",
+        "type": "header",
+        "title": "☕ 소통 & 커피챗 (Contact & Community)",
+        "order": 7,
+        "category": "contact"
+      },
+      {
+        "id": "link-5",
+        "type": "link",
+        "title": "1:1 커피챗 & 멘토링 신청",
+        "subtitle": "이직, 기술 스택 고민, 사이드 프로젝트 아이디어에 대해 편하게 이야기 나눠요.",
+        "url": "mailto:hello@example.com",
+        "order": 8,
+        "icon": "☕",
+        "badge": "Coffee Chat",
+        "isFeatured": true,
+        "clickCount": 44,
+        "category": "contact"
+      },
+      {
+        "id": "link-6",
+        "type": "link",
+        "title": "바이브 코더 카카오톡 오픈채팅방",
+        "subtitle": "프론트엔드 개발자들과 함께 지식을 나누고 네트워킹하는 공간",
+        "url": "https://open.kakao.com",
+        "order": 9,
+        "icon": "💬",
+        "isFeatured": false,
+        "clickCount": 35,
+        "category": "contact"
+      },
+      {
+        "id": "link-7",
+        "type": "link",
+        "title": "GitHub Sponsor - 개발자 후원하기",
+        "subtitle": "오픈소스 활동과 양질의 무료 개발 아티클 발행을 응원해주세요 ❤️",
+        "url": "https://github.com/sponsors",
+        "order": 10,
+        "icon": "💖",
+        "isFeatured": false,
+        "clickCount": 20,
+        "category": "contact"
+      }
+    ]
+  }
+}
