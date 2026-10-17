@@ -10,7 +10,7 @@ interface ProfileState {
 
   // Actions
   setLinks: (links: LinkItem[]) => void;
-  addLink: (link: Omit<LinkItem, "id" | "order">) => void;
+  addLink: (link: LinkItem | (Omit<LinkItem, "id" | "order"> & Partial<Pick<LinkItem, "id" | "order">>)) => void;
   deleteLink: (id: string) => void;
   updateLink: (id: string, updated: Partial<LinkItem>) => void;
   setTheme: (themeId: ThemeId) => void;
@@ -35,20 +35,23 @@ export const useProfileStore = create<ProfileState>()(
 
       addLink: (newLinkData) =>
         set((state) => {
-          // Calculate max order or append to end
-          const maxOrder = state.profile.links.reduce(
-            (max, item) => Math.max(max, item.order),
-            0
-          );
+          const id = "id" in newLinkData && newLinkData.id ? newLinkData.id : `link-${Date.now()}`;
+          const createdAt = "createdAt" in newLinkData && newLinkData.createdAt ? newLinkData.createdAt : Date.now();
+          const order = typeof newLinkData.order === "number" ? newLinkData.order : 0;
+
           const newLink: LinkItem = {
             ...newLinkData,
-            id: `link-${Date.now()}`,
-            order: maxOrder + 1,
+            id,
+            createdAt,
+            order,
           };
+
+          // 중복 방지 및 최신순(맨 앞) 배치
+          const filteredLinks = state.profile.links.filter((l) => l.id !== id);
           return {
             profile: {
               ...state.profile,
-              links: [...state.profile.links, newLink],
+              links: [newLink, ...filteredLinks],
               updatedAt: new Date().toISOString(),
             },
           };

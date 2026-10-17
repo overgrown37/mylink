@@ -16,6 +16,7 @@ export interface LinkItem {
   badge?: string;         // 'NEW', 'HOT', 'Featured', 'Open Source' 등
   isFeatured?: boolean;   // 시그니처 강조 카드 여부
   category?: string;      // 카테고리 필터용 식별자 (예: 'projects', 'articles', 'contact')
+  createdAt?: number | string; // 타임스탬프 (밀리초 또는 ISO 문자열)
 }
 
 export interface SocialLinks {

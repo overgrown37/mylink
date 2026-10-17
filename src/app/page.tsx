@@ -10,7 +10,7 @@ import { AddLinkDialog } from "@/components/links/AddLinkDialog";
 import { ShareButton } from "@/components/profile/ShareButton";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Loader2 } from "lucide-react";
 
 import { subscribeLinksFromFirestore } from "@/lib/firestoreLinks";
 
@@ -19,23 +19,43 @@ export default function HomePage() {
   const setLinks = useProfileStore((state) => state.setLinks);
   const resetToMockData = useProfileStore((state) => state.resetToMockData);
   const [mounted, setMounted] = useState(false);
+  const [isFirestoreLoading, setIsFirestoreLoading] = useState(true);
 
   useEffect(() => {
     setMounted(true);
+    const startTime = Date.now();
 
-    // Firestore users/anonymous/links 실시간 구독
+    // 오프라인 또는 응답 지연 시 무한 로딩 방지용 4초 안전 타임아웃
+    const timeoutTimer = setTimeout(() => {
+      setIsFirestoreLoading(false);
+    }, 4000);
+
+    // Firestore users/anonymous/links 실시간 구독 (createdAt 최신순)
     const unsubscribe = subscribeLinksFromFirestore(
       (firestoreLinks) => {
-        if (firestoreLinks && firestoreLinks.length > 0) {
+        clearTimeout(timeoutTimer);
+
+        // Firestore에서 불러온 링크 목록 반영 (createdAt 최신순)
+        if (firestoreLinks) {
           setLinks(firestoreLinks);
         }
+
+        // 로딩원이 사용자에게 시각적으로 자연스럽게 인지되도록 최소 표시 시간(500ms) 보장
+        const elapsed = Date.now() - startTime;
+        const remainingDelay = Math.max(0, 500 - elapsed);
+        setTimeout(() => {
+          setIsFirestoreLoading(false);
+        }, remainingDelay);
       },
       (error) => {
+        clearTimeout(timeoutTimer);
+        setIsFirestoreLoading(false);
         console.warn("Firestore 실시간 동기화 오류 (오프라인/권한):", error);
       }
     );
 
     return () => {
+      clearTimeout(timeoutTimer);
       unsubscribe();
     };
   }, [setLinks]);
@@ -80,7 +100,29 @@ export default function HomePage() {
         </div>
 
         {/* Links & Section Headers */}
-        <LinkList links={profile.links} />
+        {!mounted || isFirestoreLoading ? (
+          <div
+            data-testid="loading-spinner-circle"
+            className="w-full flex flex-col items-center justify-center py-16 gap-4 animate-in fade-in duration-300"
+          >
+            {/* 세련된 회전 로딩원 (Circular Neon Spinner) */}
+            <div className="relative flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full border border-[#5865f2]/20 animate-ping opacity-25 pointer-events-none" />
+              <div className="absolute w-10 h-10 rounded-full border-[3px] border-white/10 border-t-[#5865f2] border-r-[#ec48bd] animate-spin shadow-[0_0_15px_rgba(88,101,242,0.4)]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#35ed7e] shadow-[0_0_8px_#35ed7e]" />
+            </div>
+            <div className="flex flex-col items-center gap-1 text-center">
+              <span className="text-xs font-semibold text-white/80 tracking-wide">
+                링크를 불러오는 중...
+              </span>
+              <span className="text-[11px] text-white/40">
+                잠시만 기다려주세요
+              </span>
+            </div>
+          </div>
+        ) : (
+          <LinkList links={profile.links} />
+        )}
 
         {/* Footer */}
         <footer className="mt-auto pt-8 pb-4 text-center">
