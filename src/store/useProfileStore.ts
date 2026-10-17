@@ -9,6 +9,7 @@ interface ProfileState {
   setHasHydrated: (state: boolean) => void;
 
   // Actions
+  setLinks: (links: LinkItem[]) => void;
   addLink: (link: Omit<LinkItem, "id" | "order">) => void;
   deleteLink: (id: string) => void;
   updateLink: (id: string, updated: Partial<LinkItem>) => void;
@@ -22,6 +23,15 @@ export const useProfileStore = create<ProfileState>()(
       profile: mockProfileData,
       hasHydrated: false,
       setHasHydrated: (state: boolean) => set({ hasHydrated: state }),
+
+      setLinks: (links: LinkItem[]) =>
+        set((state) => ({
+          profile: {
+            ...state.profile,
+            links,
+            updatedAt: new Date().toISOString(),
+          },
+        })),
 
       addLink: (newLinkData) =>
         set((state) => {

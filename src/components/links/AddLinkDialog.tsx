@@ -17,8 +17,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Sparkles, Link2, AlertCircle } from "lucide-react";
+import { Plus, Sparkles, Link2, AlertCircle, Loader2 } from "lucide-react";
 import { useProfileStore } from "@/store/useProfileStore";
+import { addLinkToFirestore } from "@/lib/firestoreLinks";
+import { trackEvent } from "@/lib/firebase";
+import { LinkItem } from "@/types/profile";
 
 // ─── Zod 스키마 정의 ──────────────────────────────────────────────────────────
 const addLinkSchema = z.object({
@@ -84,6 +87,10 @@ function FieldError({ message }: { message?: string }) {
 // ─── 메인 컴포넌트 ────────────────────────────────────────────────────────────
 export function AddLinkDialog() {
   const [open, setOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const currentLinks = useProfileStore((state) => state.profile.links);
   const addLink = useProfileStore((state) => state.addLink);
 
   const {
@@ -93,7 +100,7 @@ export function AddLinkDialog() {
     watch,
     reset,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<AddLinkFormValues>({
     resolver: zodResolver(addLinkSchema),
     defaultValues: {
@@ -110,30 +117,59 @@ export function AddLinkDialog() {
   const watchedSubtitle = watch("subtitle") ?? "";
   const watchedIcon = watch("icon");
 
-  const onSubmit = (data: AddLinkFormValues) => {
+  const onSubmit = async (data: AddLinkFormValues) => {
+    setIsSaving(true);
+    setSaveError(null);
+
     let formattedUrl = data.url.trim();
     if (!/^https?:\/\//i.test(formattedUrl) && !formattedUrl.startsWith("mailto:")) {
       formattedUrl = `https://${formattedUrl}`;
     }
 
-    addLink({
+    const maxOrder = currentLinks.reduce(
+      (max, item) => Math.max(max, item.order),
+      0
+    );
+
+    const newLinkData: Omit<LinkItem, "id"> = {
       type: "link",
       title: data.title.trim(),
       url: formattedUrl,
+      order: maxOrder + 1,
       subtitle: data.subtitle?.trim() || undefined,
       icon: data.icon?.trim() || "🔗",
       badge: data.badge?.trim() || undefined,
       isFeatured: data.isFeatured,
       category: "custom",
-    });
+    };
 
-    reset();
-    setOpen(false);
+    try {
+      // 1. Firestore (users/anonymous/links)에 저장
+      const savedLink = await addLinkToFirestore(newLinkData);
+
+      // 2. Analytics 이벤트 기록
+      trackEvent("link_added", { title: savedLink.title, url: savedLink.url });
+
+      // 3. 로컬 스토어 동기화 (즉각적 반응성 확보)
+      addLink(savedLink);
+
+      reset();
+      setOpen(false);
+    } catch (err: unknown) {
+      console.error("Firestore 저장 실패:", err);
+      const errorMessage = err instanceof Error ? err.message : "링크 저장 중 오류가 발생했습니다.";
+      setSaveError(errorMessage);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
     setOpen(nextOpen);
-    if (!nextOpen) reset();
+    if (!nextOpen) {
+      reset();
+      setSaveError(null);
+    }
   };
 
   return (
@@ -304,12 +340,21 @@ export function AddLinkDialog() {
             </div>
           </div>
 
+          {/* ── 저장 실패 에러 메시지 ── */}
+          {saveError && (
+            <div className="p-2.5 rounded-xl bg-[#ec48bd]/15 border border-[#ec48bd]/40 text-[#ec48bd] text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{saveError}</span>
+            </div>
+          )}
+
           <DialogFooter className="pt-3 border-t border-white/10 gap-2 sm:justify-end">
             <DialogClose
               render={
                 <Button
                   type="button"
                   variant="ghost"
+                  disabled={isSaving}
                   className="text-white/70 hover:text-white hover:bg-white/10 rounded-xl"
                 >
                   취소
@@ -319,10 +364,17 @@ export function AddLinkDialog() {
             <Button
               type="submit"
               data-testid="btn-submit-link"
-              disabled={isSubmitting}
-              className="bg-[#5865f2] hover:bg-[#4752c4] text-white font-bold rounded-xl px-5 shadow-[0_4px_16px_rgba(88,101,242,0.4)] cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              disabled={isSaving}
+              className="bg-[#5865f2] hover:bg-[#4752c4] text-white font-bold rounded-xl px-5 shadow-[0_4px_16px_rgba(88,101,242,0.4)] cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-1.5"
             >
-              추가하기
+              {isSaving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>저장 중...</span>
+                </>
+              ) : (
+                <span>추가하기</span>
+              )}
             </Button>
           </DialogFooter>
         </form>

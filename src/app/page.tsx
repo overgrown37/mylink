@@ -12,14 +12,33 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 
+import { subscribeLinksFromFirestore } from "@/lib/firestoreLinks";
+
 export default function HomePage() {
   const storeProfile = useProfileStore((state) => state.profile);
+  const setLinks = useProfileStore((state) => state.setLinks);
   const resetToMockData = useProfileStore((state) => state.resetToMockData);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+
+    // Firestore users/anonymous/links 실시간 구독
+    const unsubscribe = subscribeLinksFromFirestore(
+      (firestoreLinks) => {
+        if (firestoreLinks && firestoreLinks.length > 0) {
+          setLinks(firestoreLinks);
+        }
+      },
+      (error) => {
+        console.warn("Firestore 실시간 동기화 오류 (오프라인/권한):", error);
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, [setLinks]);
 
   // Use hydrated store after mount, or default mock data during SSR
   const profile = mounted ? storeProfile : mockProfileData;
