@@ -3,11 +3,13 @@
 import React, { useState, useEffect, useSyncExternalStore } from "react";
 import { useProfileStore } from "@/store/useProfileStore";
 import { useAuthStore, initAuthListener } from "@/store/useAuthStore";
+import { useProfileQuery } from "@/hooks/useProfileQuery";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { LinkList } from "@/components/links/LinkList";
 import { AddLinkDialog } from "@/components/links/AddLinkDialog";
 import { ShareButton } from "@/components/profile/ShareButton";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
+import { MyPageButton } from "@/components/navigation/MyPageButton";
 import { GuestWelcomeHero } from "@/components/auth/GuestWelcomeHero";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -22,7 +24,9 @@ export default function HomePage() {
   const setLinks = useProfileStore((state) => state.setLinks);
   const resetToMockData = useProfileStore((state) => state.resetToMockData);
 
-  const { user, userProfile, isLoading: isAuthLoading } = useAuthStore();
+  const { user, userProfile: authProfile, isLoading: isAuthLoading } = useAuthStore();
+  const { data: queryProfile } = useProfileQuery(user?.uid);
+  const userProfile = queryProfile || authProfile;
 
   const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
   const [loadedUserUid, setLoadedUserUid] = useState<string | null>(null);
@@ -96,7 +100,7 @@ export default function HomePage() {
         bio = defaultBio;
       }
       return {
-        displayName: emailPrefix,
+        displayName: userProfile?.displayName || emailPrefix,
         handle: userProfile?.handle || `@${emailPrefix}`,
         bio,
         avatarUrl: userProfile?.photoURL || user.photoURL || "",
@@ -130,6 +134,7 @@ export default function HomePage() {
             </span>
           </div>
           <div className="flex items-center gap-2">
+            <MyPageButton />
             <GoogleAuthButton />
             <ShareButton />
           </div>

@@ -20,8 +20,7 @@ import { Plus, Sparkles, Link2, AlertCircle, Loader2, LogIn } from "lucide-react
 import { useProfileStore } from "@/store/useProfileStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { GoogleLogo } from "@/components/auth/GoogleAuthButton";
-import { addLinkToFirestore } from "@/lib/firestoreLinks";
-import { trackEvent } from "@/lib/firebase";
+import { useAddLinkMutation } from "@/hooks/useLinkMutations";
 import { LinkItem } from "@/types/profile";
 
 import {
@@ -45,12 +44,11 @@ function FieldError({ message }: { message?: string }) {
 // ─── 메인 컴포넌트 ────────────────────────────────────────────────────────────
 export function AddLinkDialog() {
   const [open, setOpen] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const { user, loginWithGoogle, isAuthenticating } = useAuthStore();
   const currentLinks = useProfileStore((state) => state.profile.links);
-  const addLink = useProfileStore((state) => state.addLink);
+  const addLinkMutation = useAddLinkMutation();
 
   const {
     register,
@@ -76,8 +74,9 @@ export function AddLinkDialog() {
   const watchedSubtitle = watch("subtitle") ?? "";
   const watchedIcon = watch("icon");
 
+  const isSaving = addLinkMutation.isPending;
+
   const onSubmit = async (data: LinkFormValues) => {
-    setIsSaving(true);
     setSaveError(null);
     const startTime = Date.now();
 
@@ -101,29 +100,25 @@ export function AddLinkDialog() {
     };
 
     try {
-      // 1. Firestore (users/{user.uid}/links)에 저장
-      const savedLink = await addLinkToFirestore(newLinkData, user?.uid);
+      // TanStack Query 뮤테이션을 통한 저장 및 캐시 무효화
+      await addLinkMutation.mutateAsync({
+        linkData: newLinkData,
+        uid: user?.uid,
+      });
 
-      // 2. Analytics 이벤트 기록
-      trackEvent("link_added", { title: savedLink.title, url: savedLink.url });
-
-      // 3. 로컬 스토어 동기화 (즉각적 반응성 확보)
-      addLink(savedLink);
-
-      // 사용자가 로딩 상태를 명확히 인지할 수 있도록 최소 500ms 스피너 노출 보장
+      // 로딩 스피너 최소 노출 보장 (UX)
       const elapsed = Date.now() - startTime;
-      if (elapsed < 500) {
-        await new Promise((resolve) => setTimeout(resolve, 500 - elapsed));
+      if (elapsed < 400) {
+        await new Promise((resolve) => setTimeout(resolve, 400 - elapsed));
       }
 
       reset();
       setOpen(false);
     } catch (err: unknown) {
-      console.error("Firestore 저장 실패:", err);
-      const errorMessage = err instanceof Error ? err.message : "링크 저장 중 오류가 발생했습니다.";
+      console.error("Firestore 링크 추가 실패:", err);
+      const errorMessage =
+        err instanceof Error ? err.message : "링크 저장 중 오류가 발생했습니다.";
       setSaveError(errorMessage);
-    } finally {
-      setIsSaving(false);
     }
   };
 

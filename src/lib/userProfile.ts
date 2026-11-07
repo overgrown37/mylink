@@ -109,6 +109,17 @@ export const getOrCreateUserProfile = async (user: User): Promise<FirestoreUserP
 };
 
 /**
+ * users/{uid} 문서 단발 조회 (TanStack Query용)
+ */
+export const fetchUserProfile = async (uid: string): Promise<FirestoreUserProfile | null> => {
+  if (!uid) return null;
+  const userRef = doc(db, "users", uid);
+  const snap = await getDoc(userRef);
+  if (!snap.exists()) return null;
+  return docToUserProfile(uid, snap.data());
+};
+
+/**
  * users/{uid} 문서 실시간 구독
  */
 export const subscribeUserProfile = (
@@ -147,6 +158,29 @@ export const updateUserProfileInFirestore = async (
     profileUpdatedByUser: true,
     updatedAt: serverTimestamp(),
   });
+};
+
+/**
+ * displayName으로 유저 프로필 조회 (공개 프로필 페이지용)
+ * @returns 유저 프로필 또는 null
+ */
+export const fetchUserByDisplayName = async (
+  displayName: string
+): Promise<FirestoreUserProfile | null> => {
+  const trimmed = displayName?.trim();
+  if (!trimmed) return null;
+
+  const usersRef = collection(db, "users");
+  const q = query(
+    usersRef,
+    where("displayName", "==", trimmed),
+    limit(1)
+  );
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) return null;
+
+  const userDoc = snapshot.docs[0];
+  return docToUserProfile(userDoc.id, userDoc.data());
 };
 
 /**

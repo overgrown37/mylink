@@ -13,10 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Trash2, AlertTriangle, Loader2 } from "lucide-react";
 import { LinkItem } from "@/types/profile";
-import { deleteLinkFromFirestore } from "@/lib/firestoreLinks";
-import { useProfileStore } from "@/store/useProfileStore";
+import { useDeleteLinkMutation } from "@/hooks/useLinkMutations";
 import { useAuthStore } from "@/store/useAuthStore";
-import { trackEvent } from "@/lib/firebase";
 
 interface DeleteLinkDialogProps {
   item: LinkItem;
@@ -29,33 +27,27 @@ export function DeleteLinkDialog({
   open,
   onOpenChange,
 }: DeleteLinkDialogProps) {
-  const [isDeleting, setIsDeleting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const user = useAuthStore((state) => state.user);
-  const deleteLink = useProfileStore((state) => state.deleteLink);
+  const deleteMutation = useDeleteLinkMutation();
+
+  const isDeleting = deleteMutation.isPending;
 
   const handleDelete = async () => {
-    setIsDeleting(true);
     setErrorMessage(null);
     const startTime = Date.now();
 
     try {
-      // 1. 파이어베이스 Firestore에서 링크 삭제 (users/{user.uid}/links)
-      await deleteLinkFromFirestore(item.id, user?.uid);
-
-      // 2. 애널리틱스 이벤트 트래킹
-      trackEvent("link_deleted", {
-        linkId: item.id,
-        linkTitle: item.title,
+      // TanStack Query 뮤테이션을 통한 삭제
+      await deleteMutation.mutateAsync({
+        id: item.id,
+        uid: user?.uid,
       });
 
-      // 3. Zustand 로컬 스토어 동기화 (즉각 반영)
-      deleteLink(item.id);
-
-      // 사용자가 삭제 중임을 시각적으로 충분히 인지할 수 있도록 최소 500ms 스피너 노출 보장
+      // UX 스피너 노출 보장
       const elapsed = Date.now() - startTime;
-      if (elapsed < 500) {
-        await new Promise((resolve) => setTimeout(resolve, 500 - elapsed));
+      if (elapsed < 400) {
+        await new Promise((resolve) => setTimeout(resolve, 400 - elapsed));
       }
 
       onOpenChange(false);
@@ -66,8 +58,6 @@ export function DeleteLinkDialog({
           ? err.message
           : "삭제 중 오류가 발생했습니다. 다시 시도해주세요.";
       setErrorMessage(message);
-    } finally {
-      setIsDeleting(false);
     }
   };
 

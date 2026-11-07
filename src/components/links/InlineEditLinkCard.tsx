@@ -9,8 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Sparkles, AlertCircle, Loader2, Check, X } from "lucide-react";
 import { LinkItem } from "@/types/profile";
-import { updateLinkInFirestore } from "@/lib/firestoreLinks";
-import { useProfileStore } from "@/store/useProfileStore";
+import { useUpdateLinkMutation } from "@/hooks/useLinkMutations";
 import { useAuthStore } from "@/store/useAuthStore";
 import { trackEvent } from "@/lib/firebase";
 import {
@@ -41,11 +40,11 @@ export function InlineEditLinkCard({
   onCancel,
   onSuccess,
 }: InlineEditLinkCardProps) {
-  const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const user = useAuthStore((state) => state.user);
-  const updateLink = useProfileStore((state) => state.updateLink);
+  const updateMutation = useUpdateLinkMutation();
+  const isSaving = updateMutation.isPending;
 
   const {
     register,
@@ -71,7 +70,6 @@ export function InlineEditLinkCard({
   const watchedIcon = watch("icon");
 
   const onSubmit = async (data: LinkFormValues) => {
-    setIsSaving(true);
     setSaveError(null);
     const startTime = Date.now();
 
@@ -87,23 +85,22 @@ export function InlineEditLinkCard({
     };
 
     try {
-      // 1. 파이어베이스 Firestore (users/{user.uid}/links) 업데이트
-      await updateLinkInFirestore(item.id, updatedData, user?.uid);
+      // TanStack Query 뮤테이션을 통한 수정
+      await updateMutation.mutateAsync({
+        id: item.id,
+        updates: updatedData,
+        uid: user?.uid,
+      });
 
-      // 2. 애널리틱스 이벤트 기록
       trackEvent("link_updated", {
         linkId: item.id,
         title: updatedData.title,
         url: updatedData.url,
       });
 
-      // 3. 로컬 Zustand 스토어 즉시 업데이트
-      updateLink(item.id, updatedData);
-
-      // 사용자가 로딩 상태를 명확히 인지할 수 있도록 최소 500ms 스피너 노출 보장
       const elapsed = Date.now() - startTime;
-      if (elapsed < 500) {
-        await new Promise((resolve) => setTimeout(resolve, 500 - elapsed));
+      if (elapsed < 400) {
+        await new Promise((resolve) => setTimeout(resolve, 400 - elapsed));
       }
 
       if (onSuccess) onSuccess();
@@ -115,8 +112,6 @@ export function InlineEditLinkCard({
           ? err.message
           : "링크 수정 중 오류가 발생했습니다. 다시 시도해주세요.";
       setSaveError(errorMessage);
-    } finally {
-      setIsSaving(false);
     }
   };
 

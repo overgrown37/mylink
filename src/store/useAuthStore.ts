@@ -3,7 +3,6 @@ import { onAuthStateChanged, signInWithPopup, signOut, type User } from "firebas
 import { auth, googleProvider, trackEvent } from "@/lib/firebase";
 import {
   getOrCreateUserProfile,
-  subscribeUserProfile,
   type FirestoreUserProfile,
 } from "@/lib/userProfile";
 
@@ -100,7 +99,6 @@ export const useAuthStore = create<AuthState>((set) => ({
 
 // SSR 안전한 Auth 상태 초기화 리스너 등록 헬퍼
 let isListenerAttached = false;
-let profileUnsubscribe: (() => void) | null = null;
 
 export const initAuthListener = () => {
   if (typeof window === "undefined" || isListenerAttached) {
@@ -110,15 +108,9 @@ export const initAuthListener = () => {
   isListenerAttached = true;
 
   const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
-    // 기존 프로필 구독 해제
-    if (profileUnsubscribe) {
-      profileUnsubscribe();
-      profileUnsubscribe = null;
-    }
-
     if (firebaseUser) {
       try {
-        // 프로필 정보 동기화
+        // 프로필 정보 동기화 (최초 1회 생성/조회)
         const profile = await getOrCreateUserProfile(firebaseUser);
         useAuthStore.setState({
           user: firebaseUser,
@@ -126,16 +118,6 @@ export const initAuthListener = () => {
           isLoading: false,
           hasInitialized: true,
         });
-
-        // 프로필 실시간 구독
-        profileUnsubscribe = subscribeUserProfile(
-          firebaseUser.uid,
-          (updatedProfile) => {
-            if (updatedProfile) {
-              useAuthStore.setState({ userProfile: updatedProfile });
-            }
-          }
-        );
       } catch (err) {
         console.warn("사용자 프로필 동기화 오류:", err);
         useAuthStore.setState({
@@ -155,7 +137,6 @@ export const initAuthListener = () => {
   });
 
   return () => {
-    if (profileUnsubscribe) profileUnsubscribe();
     unsubscribeAuth();
     isListenerAttached = false;
   };

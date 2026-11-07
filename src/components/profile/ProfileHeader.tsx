@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { User, CheckCircle2, Pencil } from "lucide-react";
+import { User, CheckCircle2, Pencil, ExternalLink } from "lucide-react";
 import { EditProfileDialog } from "@/components/profile/EditProfileDialog";
 
 interface ProfileHeaderProps {
@@ -84,20 +85,30 @@ export function ProfileHeader({
         </p>
       )}
 
-      {/* 프로필 수정 버튼 — 로그인 유저 전용 */}
+      {/* 프로필 바로가기 및 수정 버튼 — 로그인 유저 전용 */}
       {isLoggedIn && (
-        <EditProfileDialog
-          trigger={
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-white/40 hover:text-white/80 hover:bg-white/8 rounded-xl gap-1.5 text-[11px] font-medium transition-all mt-1 cursor-pointer"
-            >
-              <Pencil className="w-3 h-3" />
-              프로필 수정
-            </Button>
-          }
-        />
+        <div className="flex items-center justify-center gap-2 pt-1 flex-wrap">
+          <Link
+            href={`/${encodeURIComponent(displayName)}`}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-medium text-white/60 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+          >
+            <ExternalLink className="w-3 h-3 text-[#35ed7e]" />
+            <span>내 공개 페이지 보기</span>
+          </Link>
+
+          <EditProfileDialog
+            trigger={
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-white/40 hover:text-white/80 hover:bg-white/8 rounded-xl gap-1.5 text-[11px] font-medium transition-all cursor-pointer"
+              >
+                <Pencil className="w-3 h-3" />
+                프로필 수정
+              </Button>
+            }
+          />
+        </div>
       )}
     </div>
   );

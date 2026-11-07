@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -26,11 +26,8 @@ import {
   UserCircle,
 } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
-import {
-  updateUserProfileInFirestore,
-  checkDisplayNameAvailable,
-} from "@/lib/userProfile";
-import { trackEvent } from "@/lib/firebase";
+import { useProfileQuery, useUpdateProfileMutation } from "@/hooks/useProfileQuery";
+import { useCheckDisplayName } from "@/hooks/useCheckDisplayName";
 
 // ─── Zod 유효성 스키마 ────────────────────────────────────────────────────────
 const editProfileSchema = z.object({
@@ -71,9 +68,6 @@ function FieldError({ message }: { message?: string }) {
   );
 }
 
-// ─── displayName 중복 확인 상태 타입 ─────────────────────────────────────────
-type AvailabilityStatus = "idle" | "checking" | "available" | "taken" | "error";
-
 // ─── 메인 컴포넌트 ────────────────────────────────────────────────────────────
 interface EditProfileDialogProps {
   trigger?: React.ReactElement;
@@ -81,12 +75,14 @@ interface EditProfileDialogProps {
 
 export function EditProfileDialog({ trigger }: EditProfileDialogProps) {
   const [open, setOpen] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
-  const [availability, setAvailability] = useState<AvailabilityStatus>("idle");
+  const { user, userProfile: authProfile } = useAuthStore();
 
-  const { user, userProfile } = useAuthStore();
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // TanStack Query: 프로필 단발 조회 및 캐싱
+  const { data: queryProfile } = useProfileQuery(user?.uid);
+  const currentProfile = queryProfile || authProfile;
+
+  // TanStack Query: 프로필 낙관적 업데이트 뮤테이션
+  const updateProfileMutation = useUpdateProfileMutation();
 
   const {
     register,
@@ -97,9 +93,9 @@ export function EditProfileDialog({ trigger }: EditProfileDialogProps) {
   } = useForm<EditProfileFormValues>({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
-      displayName: userProfile?.displayName || "",
-      bio: userProfile?.bio || "",
-      handle: userProfile?.handle || "",
+      displayName: currentProfile?.displayName || "",
+      bio: currentProfile?.bio || "",
+      handle: currentProfile?.handle || "",
     },
   });
 
@@ -107,101 +103,61 @@ export function EditProfileDialog({ trigger }: EditProfileDialogProps) {
   const watchedBio = watch("bio") ?? "";
   const watchedHandle = watch("handle") ?? "";
 
+  // TanStack Query: 닉네임 중복 확인 (5분 캐싱 + 디바운스 지원)
+  const { status: availabilityStatus, isLoading: isCheckingName } = useCheckDisplayName({
+    name: watchedDisplayName || "",
+    currentUid: user?.uid,
+    currentDisplayName: currentProfile?.displayName,
+    debounceMs: 500,
+  });
+
   // 다이얼로그 열릴 때 현재 프로필 값으로 폼 초기화
   useEffect(() => {
-    if (open && userProfile) {
+    if (open && currentProfile) {
       reset({
-        displayName: userProfile.displayName || "",
-        bio: userProfile.bio || "",
-        handle: userProfile.handle || "",
+        displayName: currentProfile.displayName || "",
+        bio: currentProfile.bio || "",
+        handle: currentProfile.handle || "",
       });
-      setAvailability("idle");
-      setSaveError(null);
     }
-  }, [open, userProfile, reset]);
+  }, [open, currentProfile, reset]);
 
-  // displayName 변경 시 디바운스 중복 확인
-  const checkName = useCallback(
-    async (name: string) => {
-      if (!user) return;
-      const trimmed = name.trim();
-
-      // 현재 본인의 displayName과 같으면 확인 불필요
-      if (trimmed === userProfile?.displayName) {
-        setAvailability("idle");
-        return;
-      }
-
-      if (trimmed.length < 2) {
-        setAvailability("idle");
-        return;
-      }
-
-      setAvailability("checking");
-      try {
-        const isAvailable = await checkDisplayNameAvailable(trimmed, user.uid);
-        setAvailability(isAvailable ? "available" : "taken");
-      } catch {
-        setAvailability("error");
-      }
-    },
-    [user, userProfile?.displayName]
-  );
-
-  useEffect(() => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      checkName(watchedDisplayName);
-    }, 600);
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [watchedDisplayName, checkName]);
-
-  const onSubmit = async (data: EditProfileFormValues) => {
+  const onSubmit = (data: EditProfileFormValues) => {
     if (!user) return;
-    if (availability === "taken") {
-      setSaveError("이미 사용 중인 닉네임입니다. 다른 닉네임을 선택해 주세요.");
-      return;
-    }
+    if (availabilityStatus === "taken") return;
 
-    setIsSaving(true);
-    setSaveError(null);
-
-    try {
-      await updateUserProfileInFirestore(user.uid, {
-        displayName: data.displayName,
-        bio: data.bio?.trim() || "",
-        handle: data.handle,
-      });
-
-      trackEvent("profile_updated", { uid: user.uid });
-      setOpen(false);
-    } catch (err: unknown) {
-      console.error("프로필 저장 실패:", err);
-      setSaveError(
-        err instanceof Error ? err.message : "프로필 저장 중 오류가 발생했습니다."
-      );
-    } finally {
-      setIsSaving(false);
-    }
+    // 낙관적 업데이트 실행 (onMutate에서 즉시 캐시 갱신되어 UI에 0ms 반영)
+    updateProfileMutation.mutate(
+      {
+        uid: user.uid,
+        updates: {
+          displayName: data.displayName,
+          bio: data.bio?.trim() || "",
+          handle: data.handle,
+        },
+      },
+      {
+        onSuccess: () => {
+          setOpen(false);
+        },
+      }
+    );
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
-    if (isSaving) return;
+    if (updateProfileMutation.isPending) return;
     setOpen(nextOpen);
     if (!nextOpen) {
-      setSaveError(null);
-      setAvailability("idle");
+      updateProfileMutation.reset();
     }
   };
 
-  // displayName 가용성 인디케이터
+  // displayName 중복 확인 상태 인디케이터
   const renderAvailabilityIndicator = () => {
-    const isSameName = watchedDisplayName.trim() === userProfile?.displayName;
-    if (isSameName || availability === "idle") return null;
+    const isSameName = watchedDisplayName?.trim() === currentProfile?.displayName;
+    if (isSameName || availabilityStatus === "idle") return null;
 
-    if (availability === "checking") {
+    if (isCheckingName || availabilityStatus === "checking") {
       return (
         <span className="flex items-center gap-1 text-[11px] text-white/50 mt-1">
           <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -209,7 +165,7 @@ export function EditProfileDialog({ trigger }: EditProfileDialogProps) {
         </span>
       );
     }
-    if (availability === "available") {
+    if (availabilityStatus === "available") {
       return (
         <span className="flex items-center gap-1 text-[11px] text-[#35ed7e] mt-1 animate-in fade-in-50">
           <CheckCircle2 className="w-3.5 h-3.5" />
@@ -217,7 +173,7 @@ export function EditProfileDialog({ trigger }: EditProfileDialogProps) {
         </span>
       );
     }
-    if (availability === "taken") {
+    if (availabilityStatus === "taken") {
       return (
         <span className="flex items-center gap-1 text-[11px] text-[#ec48bd] mt-1 animate-in fade-in-50">
           <XCircle className="w-3.5 h-3.5" />
@@ -225,7 +181,7 @@ export function EditProfileDialog({ trigger }: EditProfileDialogProps) {
         </span>
       );
     }
-    if (availability === "error") {
+    if (availabilityStatus === "error") {
       return (
         <span className="flex items-center gap-1 text-[11px] text-white/40 mt-1">
           <AlertCircle className="w-3.5 h-3.5" />
@@ -236,7 +192,12 @@ export function EditProfileDialog({ trigger }: EditProfileDialogProps) {
     return null;
   };
 
-  const isSubmitDisabled = isSaving || availability === "taken" || availability === "checking";
+  const isSaving = updateProfileMutation.isPending;
+  const isSubmitDisabled =
+    isSaving ||
+    availabilityStatus === "taken" ||
+    availabilityStatus === "checking" ||
+    isCheckingName;
 
   const defaultTrigger = (
     <Button
@@ -282,7 +243,7 @@ export function EditProfileDialog({ trigger }: EditProfileDialogProps) {
                 닉네임 (Display Name) <span className="text-[#ec48bd]">*</span>
               </Label>
               <span className="text-[10px] text-white/40">
-                {watchedDisplayName.length}/30
+                {(watchedDisplayName || "").length}/30
               </span>
             </div>
             <Input
@@ -290,9 +251,9 @@ export function EditProfileDialog({ trigger }: EditProfileDialogProps) {
               placeholder="표시될 닉네임을 입력하세요"
               {...register("displayName")}
               className={`bg-[#1e2353]/60 border-white/10 text-white placeholder:text-white/30 h-10 rounded-xl text-sm transition-all ${
-                errors.displayName || availability === "taken"
+                errors.displayName || availabilityStatus === "taken"
                   ? "border-[#ec48bd] ring-1 ring-[#ec48bd]/50 focus-visible:border-[#ec48bd] focus-visible:ring-[#ec48bd]/50"
-                  : availability === "available"
+                  : availabilityStatus === "available"
                   ? "border-[#35ed7e]/50 ring-1 ring-[#35ed7e]/30 focus-visible:border-[#35ed7e] focus-visible:ring-[#35ed7e]/30"
                   : "focus-visible:border-[#5865f2] focus-visible:ring-[#5865f2]/50"
               }`}
@@ -351,10 +312,14 @@ export function EditProfileDialog({ trigger }: EditProfileDialogProps) {
           </div>
 
           {/* ── 저장 실패 에러 ── */}
-          {saveError && (
+          {updateProfileMutation.isError && (
             <div className="p-2.5 rounded-xl bg-[#ec48bd]/15 border border-[#ec48bd]/40 text-[#ec48bd] text-xs flex items-center gap-2 animate-in fade-in-50">
               <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{saveError}</span>
+              <span>
+                {updateProfileMutation.error instanceof Error
+                  ? updateProfileMutation.error.message
+                  : "프로필 저장 중 오류가 발생했습니다."}
+              </span>
             </div>
           )}
 

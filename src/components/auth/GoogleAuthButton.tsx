@@ -1,10 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useProfileQuery } from "@/hooks/useProfileQuery";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { LogOut, Loader2, User as UserIcon } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import {
+  LogOut,
+  Loader2,
+  User as UserIcon,
+  ChevronDown,
+  Globe,
+  Home,
+  Pencil,
+} from "lucide-react";
+import { EditProfileDialog } from "@/components/profile/EditProfileDialog";
 
 export function GoogleLogo({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -30,21 +42,42 @@ export function GoogleLogo({ className = "w-4 h-4" }: { className?: string }) {
 }
 
 export function GoogleAuthButton() {
-  const { user, userProfile, isLoading, isAuthenticating, loginWithGoogle, logout } =
+  const { user, userProfile: authProfile, isLoading, isAuthenticating, loginWithGoogle, logout } =
     useAuthStore();
+  const { data: queryProfile } = useProfileQuery(user?.uid);
+  const currentProfile = queryProfile || authProfile;
+
+  const [menuOpen, setMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // 외부 클릭 시 드롭다운 닫기
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuOpen]);
 
   const handleLogin = async () => {
     try {
       await loginWithGoogle();
     } catch {
-      // 에러는 useAuthStore 내부에서 관리되거나 팝업 취소 시 조용히 처리
+      // 조용히 처리
     }
   };
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
+      setMenuOpen(false);
       await logout();
     } finally {
       setIsLoggingOut(false);
@@ -61,46 +94,151 @@ export function GoogleAuthButton() {
     );
   }
 
-  // 로그인 상태인 경우: 아바타 + 이름 + 로그아웃 버튼
+  // 로그인 상태인 경우: 아바타 + 이름 + 드롭다운 토글
   if (user) {
-    const avatar = userProfile?.photoURL || user.photoURL;
-    const name = user.email ? user.email.split("@")[0] : (userProfile?.displayName || user.displayName || "사용자");
+    const avatar = currentProfile?.photoURL || user.photoURL;
+    const emailPrefix = user.email ? user.email.split("@")[0] : "user";
+    const displayName = currentProfile?.displayName || emailPrefix;
+    const handle = currentProfile?.handle || `@${emailPrefix}`;
+    const publicPageHref = `/${encodeURIComponent(displayName)}`;
 
     return (
-      <div className="flex items-center gap-2 animate-in fade-in duration-300">
-        <div
-          className="flex items-center gap-1.5 pl-1.5 pr-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-all max-w-[150px] sm:max-w-[180px]"
-          title={`${name} (${user.email || ""})`}
+      <div className="relative inline-block text-left" ref={menuRef}>
+        {/* Profile Chip Button (Dropdown Trigger) */}
+        <button
+          type="button"
+          data-testid="profile-dropdown-trigger"
+          onClick={() => setMenuOpen(!menuOpen)}
+          className={`flex items-center gap-1.5 pl-1.5 pr-2.5 py-1 rounded-full border transition-all cursor-pointer select-none max-w-[170px] sm:max-w-[200px] ${
+            menuOpen
+              ? "bg-[#5865f2]/20 border-[#5865f2] shadow-[0_0_15px_rgba(88,101,242,0.4)]"
+              : "bg-white/5 hover:bg-white/10 border-white/10 hover:border-white/20"
+          }`}
+          title={`${displayName} (${user.email || ""})`}
         >
           <Avatar className="w-5 h-5 border border-[#35ed7e]/50">
             {avatar ? (
-              <AvatarImage src={avatar} alt={name} />
+              <AvatarImage src={avatar} alt={displayName} />
             ) : null}
             <AvatarFallback className="bg-[#1e2353] text-[9px] text-white">
               <UserIcon className="w-3 h-3 text-white/70" />
             </AvatarFallback>
           </Avatar>
           <span className="text-xs font-semibold text-white/90 truncate">
-            {name}
+            {displayName}
           </span>
-        </div>
+          <ChevronDown
+            className={`w-3 h-3 text-white/50 transition-transform duration-200 ${
+              menuOpen ? "rotate-180 text-white" : ""
+            }`}
+          />
+        </button>
 
-        <Button
-          data-testid="btn-google-logout"
-          variant="ghost"
-          size="xs"
-          onClick={handleLogout}
-          disabled={isLoggingOut}
-          title="로그아웃"
-          className="h-7 px-2 text-white/60 hover:text-[#ec48bd] hover:bg-[#ec48bd]/10 rounded-full transition-all text-xs gap-1 border border-transparent hover:border-[#ec48bd]/30 cursor-pointer"
-        >
-          {isLoggingOut ? (
-            <Loader2 className="w-3 h-3 animate-spin" />
-          ) : (
-            <LogOut className="w-3.5 h-3.5" />
-          )}
-          <span className="hidden sm:inline text-[11px]">로그아웃</span>
-        </Button>
+        {/* Dropdown Menu */}
+        {menuOpen && (
+          <div
+            data-testid="profile-dropdown-menu"
+            className="absolute right-0 top-full mt-2 w-64 rounded-2xl bg-[#12163a] border border-[#5865f2]/40 shadow-[0_20px_50px_rgba(0,0,0,0.7)] p-2 z-50 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150"
+          >
+            {/* Header info */}
+            <div className="px-3 py-2.5 space-y-1">
+              <div className="flex items-center gap-2">
+                <Avatar className="w-7 h-7 border border-[#35ed7e]/50">
+                  {avatar ? <AvatarImage src={avatar} alt={displayName} /> : null}
+                  <AvatarFallback className="bg-[#1e2353] text-xs text-white">
+                    <UserIcon className="w-3.5 h-3.5 text-white/70" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold text-white truncate leading-tight">
+                    {displayName}
+                  </p>
+                  <p className="text-[11px] font-mono text-[#35ed7e] truncate">
+                    {handle}
+                  </p>
+                </div>
+              </div>
+              {user.email && (
+                <p className="text-[10px] text-white/40 truncate pt-0.5">
+                  {user.email}
+                </p>
+              )}
+            </div>
+
+            <Separator className="bg-white/10 my-1" />
+
+            {/* Menu Items */}
+            <div className="py-1 space-y-0.5">
+              {/* 내 공개 페이지 이동 */}
+              <Link
+                href={publicPageHref}
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center justify-between w-full px-3 py-2 rounded-xl text-left hover:bg-[#5865f2]/20 text-white/90 hover:text-white transition-all group cursor-pointer"
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="p-1 rounded-lg bg-[#35ed7e]/15 text-[#35ed7e]">
+                    <Globe className="w-3.5 h-3.5" />
+                  </span>
+                  <div>
+                    <span className="text-xs font-semibold block">내 공개 페이지 보기</span>
+                    <span className="text-[10px] text-white/40 block truncate max-w-[130px]">
+                      /{displayName}
+                    </span>
+                  </div>
+                </div>
+                <span className="text-[9px] uppercase font-bold text-[#35ed7e] bg-[#35ed7e]/10 border border-[#35ed7e]/30 px-1.5 py-0.5 rounded-md">
+                  Live
+                </span>
+              </Link>
+
+              {/* 프로필 수정 모달 트리거 */}
+              <EditProfileDialog
+                trigger={
+                  <button
+                    type="button"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-left hover:bg-white/5 text-white/80 hover:text-white transition-all cursor-pointer"
+                  >
+                    <span className="p-1 rounded-lg bg-white/5 text-white/60">
+                      <Pencil className="w-3.5 h-3.5" />
+                    </span>
+                    <span className="text-xs font-medium">프로필 정보 수정</span>
+                  </button>
+                }
+              />
+
+              {/* 관리 홈 이동 */}
+              <Link
+                href="/"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-left hover:bg-white/5 text-white/80 hover:text-white transition-all cursor-pointer"
+              >
+                <span className="p-1 rounded-lg bg-white/5 text-white/60">
+                  <Home className="w-3.5 h-3.5" />
+                </span>
+                <span className="text-xs font-medium">내 링크 관리 홈</span>
+              </Link>
+            </div>
+
+            <Separator className="bg-white/10 my-1" />
+
+            {/* Logout Button */}
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className="flex items-center justify-between w-full px-3 py-2 rounded-xl text-left text-white/60 hover:text-[#ec48bd] hover:bg-[#ec48bd]/15 transition-all text-xs cursor-pointer group"
+              >
+                <div className="flex items-center gap-2">
+                  <LogOut className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform" />
+                  <span>로그아웃</span>
+                </div>
+                {isLoggingOut && <Loader2 className="w-3 h-3 animate-spin" />}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
