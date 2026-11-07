@@ -2,16 +2,9 @@
   "displayName": "김무성 | Vibe Coder",
   "handle": "@mooseong_dev",
   "bio": "아이디어를 코드로 실현하는 풀스택 개발자입니다 🚀\n포트폴리오와 주요 활동 링크를 모았습니다.",
-  "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80",
+  "avatarUrl": "",
   "themeId": "discord-signature",
-  "socials": {
-    "github": "https://github.com",
-    "instagram": "https://instagram.com",
-    "youtube": "https://youtube.com",
-    "twitter": "https://x.com",
-    "linkedin": "https://linkedin.com",
-    "email": "mailto:hello@example.com"
-  },
+  "socials": {},
   "links": [],
-  "updatedAt": "2026-10-17T08:28:00.000Z"
+  "updatedAt": "2026-10-24T05:50:00.000Z"
 }

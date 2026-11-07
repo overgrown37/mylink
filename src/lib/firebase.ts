@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
-import { getAuth, type Auth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, type Auth, type User } from "firebase/auth";
 import { getFirestore, type Firestore } from "firebase/firestore";
 import { getStorage, type FirebaseStorage } from "firebase/storage";
 import { getAnalytics, isSupported, logEvent, type Analytics } from "firebase/analytics";
@@ -28,8 +28,13 @@ export const app: FirebaseApp = getApps().length > 0 ? getApp() : initializeApp(
  * 주요 Firebase 서비스 인스턴스 (인증, 데이터베이스, 스토리지)
  */
 export const auth: Auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: "select_account" });
+
 export const db: Firestore = getFirestore(app);
 export const storage: FirebaseStorage = getStorage(app);
+
+export { GoogleAuthProvider, signInWithPopup, signOut, type User };
 
 /**
  * Next.js SSR 환경 대응 안전한 Analytics 초기화

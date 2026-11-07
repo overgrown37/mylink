@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import {
   Dialog,
   DialogTrigger,
@@ -17,61 +16,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Sparkles, Link2, AlertCircle, Loader2 } from "lucide-react";
+import { Plus, Sparkles, Link2, AlertCircle, Loader2, LogIn } from "lucide-react";
 import { useProfileStore } from "@/store/useProfileStore";
+import { useAuthStore } from "@/store/useAuthStore";
+import { GoogleLogo } from "@/components/auth/GoogleAuthButton";
 import { addLinkToFirestore } from "@/lib/firestoreLinks";
 import { trackEvent } from "@/lib/firebase";
 import { LinkItem } from "@/types/profile";
 
-// ─── Zod 스키마 정의 ──────────────────────────────────────────────────────────
-const addLinkSchema = z.object({
-  title: z
-    .string()
-    .min(1, "링크 제목을 입력해주세요.")
-    .min(2, "링크 제목은 최소 2글자 이상 입력해주세요.")
-    .max(50, "링크 제목은 최대 50자까지 입력 가능합니다."),
-
-  url: z
-    .string()
-    .min(1, "이동할 웹 URL을 입력해주세요.")
-    .refine(
-      (val) => {
-        const trimmed = val.trim();
-        if (/^mailto:[^\s@]+@[^\s@]+\.[^\s@]+$/i.test(trimmed)) return true;
-        try {
-          const urlToParse = /^https?:\/\//i.test(trimmed)
-            ? trimmed
-            : `https://${trimmed}`;
-          const parsed = new URL(urlToParse);
-          return (
-            parsed.hostname.includes(".") || parsed.hostname === "localhost"
-          );
-        } catch {
-          return false;
-        }
-      },
-      { message: "올바른 URL 형식(예: https://example.com 또는 velog.io)을 입력해주세요." }
-    ),
-
-  subtitle: z
-    .string()
-    .max(80, "설명은 최대 80자까지 입력 가능합니다.")
-    .optional(),
-
-  icon: z.string().max(4).optional(),
-
-  badge: z
-    .string()
-    .max(15, "뱃지 텍스트는 최대 15자까지 입력 가능합니다.")
-    .optional(),
-
-  isFeatured: z.boolean().optional(),
-});
-
-type AddLinkFormValues = z.infer<typeof addLinkSchema>;
-
-// ─── 이모지 프리셋 ────────────────────────────────────────────────────────────
-const EMOJI_PRESETS = ["🔗", "🚀", "✨", "💡", "🎨", "📝", "☕", "💖", "🔥", "⭐"];
+import {
+  linkSchema,
+  type LinkFormValues,
+  EMOJI_PRESETS,
+  formatLinkUrl,
+} from "@/lib/validations/linkSchema";
 
 // ─── 에러 메시지 공통 컴포넌트 ────────────────────────────────────────────────
 function FieldError({ message }: { message?: string }) {
@@ -90,6 +48,7 @@ export function AddLinkDialog() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
+  const { user, loginWithGoogle, isAuthenticating } = useAuthStore();
   const currentLinks = useProfileStore((state) => state.profile.links);
   const addLink = useProfileStore((state) => state.addLink);
 
@@ -101,8 +60,8 @@ export function AddLinkDialog() {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<AddLinkFormValues>({
-    resolver: zodResolver(addLinkSchema),
+  } = useForm<LinkFormValues>({
+    resolver: zodResolver(linkSchema),
     defaultValues: {
       title: "",
       url: "",
@@ -117,14 +76,12 @@ export function AddLinkDialog() {
   const watchedSubtitle = watch("subtitle") ?? "";
   const watchedIcon = watch("icon");
 
-  const onSubmit = async (data: AddLinkFormValues) => {
+  const onSubmit = async (data: LinkFormValues) => {
     setIsSaving(true);
     setSaveError(null);
+    const startTime = Date.now();
 
-    let formattedUrl = data.url.trim();
-    if (!/^https?:\/\//i.test(formattedUrl) && !formattedUrl.startsWith("mailto:")) {
-      formattedUrl = `https://${formattedUrl}`;
-    }
+    const formattedUrl = formatLinkUrl(data.url);
 
     const maxOrder = currentLinks.reduce(
       (max, item) => Math.max(max, item.order),
@@ -144,14 +101,20 @@ export function AddLinkDialog() {
     };
 
     try {
-      // 1. Firestore (users/anonymous/links)에 저장
-      const savedLink = await addLinkToFirestore(newLinkData);
+      // 1. Firestore (users/{user.uid}/links)에 저장
+      const savedLink = await addLinkToFirestore(newLinkData, user?.uid);
 
       // 2. Analytics 이벤트 기록
       trackEvent("link_added", { title: savedLink.title, url: savedLink.url });
 
       // 3. 로컬 스토어 동기화 (즉각적 반응성 확보)
       addLink(savedLink);
+
+      // 사용자가 로딩 상태를 명확히 인지할 수 있도록 최소 500ms 스피너 노출 보장
+      const elapsed = Date.now() - startTime;
+      if (elapsed < 500) {
+        await new Promise((resolve) => setTimeout(resolve, 500 - elapsed));
+      }
 
       reset();
       setOpen(false);
@@ -195,15 +158,45 @@ export function AddLinkDialog() {
             </span>
             <div>
               <DialogTitle className="text-lg font-bold text-white tracking-tight">
-                새 링크 추가
+                {user ? "새 링크 추가" : "로그인 안내"}
               </DialogTitle>
               <DialogDescription className="text-xs text-white/60 mt-0.5">
-                프로필에 노출될 새로운 링크와 세부 정보를 입력하세요.
+                {user
+                  ? "프로필에 노출될 새로운 링크와 세부 정보를 입력하세요."
+                  : "링크를 생성하려면 먼저 Google 로그인이 필요합니다."}
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
+        {!user ? (
+          <div className="py-6 flex flex-col items-center text-center space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-[#5865f2]/20 border border-[#5865f2]/40 flex items-center justify-center text-[#5865f2]">
+              <LogIn className="w-6 h-6" />
+            </div>
+            <div className="space-y-1 max-w-xs">
+              <h3 className="text-base font-bold text-white">로그인이 필요한 기능입니다</h3>
+              <p className="text-xs text-white/60 leading-relaxed">
+                나만의 링크를 생성하고 클라우드(users/{`{uid}`}/links)에 보관하려면 Google 계정으로 먼저 로그인해 주세요.
+              </p>
+            </div>
+            <Button
+              type="button"
+              onClick={async () => {
+                try {
+                  await loginWithGoogle();
+                } catch {
+                  // 안전한 예외 처리
+                }
+              }}
+              disabled={isAuthenticating}
+              className="bg-white hover:bg-white/90 text-slate-900 font-bold rounded-xl px-5 text-xs h-10 gap-2 cursor-pointer shadow-md mt-2"
+            >
+              <GoogleLogo className="w-4 h-4" />
+              <span>Google 계정으로 로그인</span>
+            </Button>
+          </div>
+        ) : (
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4 my-2">
 
           {/* ── 링크 제목 ── */}
@@ -378,6 +371,7 @@ export function AddLinkDialog() {
             </Button>
           </DialogFooter>
         </form>
+        )}
       </DialogContent>
     </Dialog>
   );

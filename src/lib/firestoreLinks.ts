@@ -12,16 +12,22 @@ import {
   type Unsubscribe,
   type DocumentData,
 } from "firebase/firestore";
-import { db } from "./firebase";
+import { db, auth } from "./firebase";
 import { LinkItem } from "@/types/profile";
 
 /**
- * Firestore 컬렉션 경로: users/anonymous/links
+ * 활성 사용자 ID 확인 헬퍼
  */
-export const LINKS_COLLECTION_PATH = "users/anonymous/links";
+export const resolveUserId = (uid?: string): string => {
+  return uid || auth.currentUser?.uid || "anonymous";
+};
 
-export const getLinksCollection = () => {
-  return collection(db, "users", "anonymous", "links");
+/**
+ * Firestore 컬렉션 경로: users/{userKey}/links
+ */
+export const getLinksCollection = (uid?: string) => {
+  const userKey = resolveUserId(uid);
+  return collection(db, "users", userKey, "links");
 };
 
 /**
@@ -70,12 +76,13 @@ const docToLinkItem = (id: string, data: DocumentData): LinkItem => {
 };
 
 /**
- * Firestore (users/anonymous/links)에 새로운 링크 추가
+ * Firestore (users/{uid}/links)에 새로운 링크 추가
  */
 export const addLinkToFirestore = async (
-  newLinkData: Omit<LinkItem, "id">
+  newLinkData: Omit<LinkItem, "id">,
+  uid?: string
 ): Promise<LinkItem> => {
-  const linksCol = getLinksCollection();
+  const linksCol = getLinksCollection(uid);
   const cleanData = sanitizeForFirestore({
     ...newLinkData,
     createdAt: serverTimestamp(),
@@ -91,16 +98,15 @@ export const addLinkToFirestore = async (
 };
 
 /**
- * Firestore (users/anonymous/links) 실시간 구독 (onSnapshot)
+ * Firestore (users/{uid}/links) 실시간 구독 (onSnapshot)
  * createdAt 기준 최신순 정렬 (내림차순)
- * 컬렉션에 새 링크가 추가되거나 변경되면 실시간으로 콜백 호출
  */
 export const subscribeLinksFromFirestore = (
   onNext: (links: LinkItem[]) => void,
-  onError?: (error: Error) => void
+  onError?: (error: Error) => void,
+  uid?: string
 ): Unsubscribe => {
-  const linksCol = getLinksCollection();
-  // createdAt 기준 최신순 (내림차순 desc) 정렬
+  const linksCol = getLinksCollection(uid);
   const q = query(linksCol, orderBy("createdAt", "desc"));
 
   return onSnapshot(
@@ -109,7 +115,6 @@ export const subscribeLinksFromFirestore = (
       const links: LinkItem[] = snapshot.docs.map((d) =>
         docToLinkItem(d.id, d.data())
       );
-      // 로컬 쓰기 직후(pending writes) createdAt이 비어있는 경우를 대비한 최신순 보정
       const sortedLinks = [...links].sort((a, b) => {
         if (a.createdAt !== undefined && b.createdAt !== undefined) {
           return Number(b.createdAt) - Number(a.createdAt);
@@ -128,11 +133,10 @@ export const subscribeLinksFromFirestore = (
 };
 
 /**
- * Firestore (users/anonymous/links) 1회성 링크 목록 조회 (getDocs)
- * createdAt 기준 최신순 정렬
+ * Firestore (users/{uid}/links) 1회성 링크 목록 조회 (getDocs)
  */
-export const getLinksFromFirestore = async (): Promise<LinkItem[]> => {
-  const linksCol = getLinksCollection();
+export const getLinksFromFirestore = async (uid?: string): Promise<LinkItem[]> => {
+  const linksCol = getLinksCollection(uid);
   const q = query(linksCol, orderBy("createdAt", "desc"));
   const snapshot = await getDocs(q);
   const links = snapshot.docs.map((d) => docToLinkItem(d.id, d.data()));
@@ -149,8 +153,9 @@ export const getLinksFromFirestore = async (): Promise<LinkItem[]> => {
 /**
  * Firestore 링크 삭제
  */
-export const deleteLinkFromFirestore = async (id: string): Promise<void> => {
-  const docRef = doc(db, "users", "anonymous", "links", id);
+export const deleteLinkFromFirestore = async (id: string, uid?: string): Promise<void> => {
+  const userKey = resolveUserId(uid);
+  const docRef = doc(db, "users", userKey, "links", id);
   await deleteDoc(docRef);
 };
 
@@ -159,9 +164,11 @@ export const deleteLinkFromFirestore = async (id: string): Promise<void> => {
  */
 export const updateLinkInFirestore = async (
   id: string,
-  updated: Partial<LinkItem>
+  updated: Partial<LinkItem>,
+  uid?: string
 ): Promise<void> => {
-  const docRef = doc(db, "users", "anonymous", "links", id);
+  const userKey = resolveUserId(uid);
+  const docRef = doc(db, "users", userKey, "links", id);
   const cleanData = sanitizeForFirestore({
     ...updated,
     updatedAt: serverTimestamp(),
