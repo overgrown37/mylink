@@ -14,8 +14,6 @@ interface Props {
   params: Promise<{ displayName: string }>;
 }
 
-const LINK_ACCENTS = ["#5865f2", "#35ed7e", "#ec48bd", "#06b6d4"];
-
 export default async function DynamicProfileOpenGraphImage({ params }: Props) {
   const { displayName } = await params;
   const decodedName = decodeURIComponent(displayName);
@@ -82,17 +80,16 @@ export default async function DynamicProfileOpenGraphImage({ params }: Props) {
   ]);
 
   const validLinks = allLinks.filter((l) => l.type === "link");
-  const topLinks = validLinks.slice(0, 4);
   const totalClicks = validLinks.reduce((sum, l) => sum + (l.clicks || 0), 0);
 
   const safeDisplayName =
-    userProfile.displayName.length > 18
-      ? `${userProfile.displayName.slice(0, 18)}…`
+    userProfile.displayName.length > 22
+      ? `${userProfile.displayName.slice(0, 22)}…`
       : userProfile.displayName;
 
   const safeBio =
-    userProfile.bio && userProfile.bio.length > 74
-      ? `${userProfile.bio.slice(0, 74)}…`
+    userProfile.bio && userProfile.bio.length > 90
+      ? `${userProfile.bio.slice(0, 90)}…`
       : userProfile.bio || "나만의 링크를 한곳에서 만나보세요.";
 
   const initialChar = userProfile.displayName.trim().charAt(0).toUpperCase() || "M";
@@ -104,34 +101,38 @@ export default async function DynamicProfileOpenGraphImage({ params }: Props) {
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "row",
-          alignItems: "stretch",
-          justifyContent: "space-between",
+          alignItems: "center",
+          justifyContent: "center",
           backgroundColor: "#0a0d3a",
           backgroundImage:
-            "radial-gradient(circle at 15% 20%, rgba(88, 101, 242, 0.36), transparent 46%), radial-gradient(circle at 85% 82%, rgba(236, 72, 189, 0.28), transparent 46%), radial-gradient(circle at 50% 90%, rgba(53, 237, 126, 0.14), transparent 45%)",
-          padding: "52px 60px",
+            "radial-gradient(circle at 20% 20%, rgba(88, 101, 242, 0.36), transparent 48%), radial-gradient(circle at 82% 80%, rgba(236, 72, 189, 0.3), transparent 48%), radial-gradient(circle at 50% 92%, rgba(53, 237, 126, 0.16), transparent 46%)",
+          padding: "44px 56px",
           fontFamily: '"Noto Sans KR", sans-serif',
           color: "#ffffff",
-          gap: "44px",
         }}
       >
-        {/* Left Column: User Profile Identity */}
+        {/* Centered Glass Profile Card */}
         <div
           style={{
+            width: "100%",
+            height: "100%",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            width: "540px",
-            height: "100%",
+            backgroundColor: "rgba(18, 22, 58, 0.88)",
+            border: "2px solid rgba(88, 101, 242, 0.48)",
+            borderRadius: "36px",
+            padding: "40px 52px",
+            boxShadow: "0 24px 70px rgba(0, 0, 0, 0.55)",
           }}
         >
-          {/* Top Brand Tag */}
+          {/* Top Bar: Brand & Profile URL */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "12px",
+              justifyContent: "space-between",
+              width: "100%",
             }}
           >
             <div
@@ -142,8 +143,8 @@ export default async function DynamicProfileOpenGraphImage({ params }: Props) {
                 backgroundColor: "rgba(88, 101, 242, 0.22)",
                 border: "1.5px solid rgba(88, 101, 242, 0.55)",
                 borderRadius: "9999px",
-                padding: "7px 16px",
-                fontSize: "16px",
+                padding: "7px 18px",
+                fontSize: "17px",
                 fontWeight: 700,
                 letterSpacing: "2px",
               }}
@@ -158,21 +159,34 @@ export default async function DynamicProfileOpenGraphImage({ params }: Props) {
               />
               <span>MYLINK</span>
             </div>
-            <span
+
+            <div
               style={{
+                display: "flex",
+                alignItems: "center",
+                backgroundColor: "rgba(255, 255, 255, 0.06)",
+                border: "1px solid rgba(255, 255, 255, 0.14)",
+                borderRadius: "9999px",
+                padding: "7px 18px",
                 fontSize: "17px",
-                color: "rgba(255, 255, 255, 0.55)",
+                color: "rgba(255, 255, 255, 0.8)",
               }}
             >
-              공식 프로필
-            </span>
+              <span>mylink.app/</span>
+              <span style={{ color: "#35ed7e", fontWeight: 700 }}>
+                {userProfile.displayName}
+              </span>
+            </div>
           </div>
 
-          {/* Center Profile Info */}
+          {/* Center Hero: Avatar + Name + Handle + Bio */}
           <div
             style={{
               display: "flex",
               flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
               gap: "18px",
             }}
           >
@@ -181,112 +195,104 @@ export default async function DynamicProfileOpenGraphImage({ params }: Props) {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "22px",
+                justifyContent: "center",
+                width: "136px",
+                height: "136px",
+                borderRadius: "9999px",
+                backgroundImage: "linear-gradient(135deg, #5865f2, #35ed7e, #ec48bd)",
+                padding: "4px",
+                position: "relative",
               }}
             >
+              {avatarDataUri ? (
+                <img
+                  src={avatarDataUri}
+                  alt={userProfile.displayName}
+                  width={128}
+                  height={128}
+                  style={{
+                    width: "128px",
+                    height: "128px",
+                    borderRadius: "9999px",
+                    objectFit: "cover",
+                    backgroundColor: "#161b4e",
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "128px",
+                    height: "128px",
+                    borderRadius: "9999px",
+                    backgroundColor: "#161b4e",
+                    fontSize: "52px",
+                    fontWeight: 700,
+                    color: "#ffffff",
+                  }}
+                >
+                  {initialChar}
+                </div>
+              )}
+
+              {/* Verified Badge */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "2px",
+                  right: "2px",
+                  width: "34px",
+                  height: "34px",
+                  borderRadius: "9999px",
+                  backgroundColor: "#35ed7e",
+                  border: "3px solid #12163a",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#0a0d3a",
+                  fontSize: "18px",
+                  fontWeight: 700,
+                }}
+              >
+                ✓
+              </div>
+            </div>
+
+            {/* Name & Handle */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "16px",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "52px",
+                  fontWeight: 700,
+                  lineHeight: 1.15,
+                  letterSpacing: "-1.2px",
+                }}
+              >
+                {safeDisplayName}
+              </span>
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  width: "112px",
-                  height: "112px",
-                  borderRadius: "9999px",
-                  backgroundImage: "linear-gradient(135deg, #5865f2, #35ed7e, #ec48bd)",
-                  padding: "4px",
-                  position: "relative",
+                  backgroundColor: "rgba(53, 237, 126, 0.14)",
+                  border: "1px solid rgba(53, 237, 126, 0.38)",
+                  borderRadius: "12px",
+                  padding: "6px 16px",
+                  fontSize: "22px",
+                  fontWeight: 700,
+                  color: "#35ed7e",
                 }}
               >
-                {avatarDataUri ? (
-                  <img
-                    src={avatarDataUri}
-                    alt={userProfile.displayName}
-                    width={104}
-                    height={104}
-                    style={{
-                      width: "104px",
-                      height: "104px",
-                      borderRadius: "9999px",
-                      objectFit: "cover",
-                      backgroundColor: "#161b4e",
-                    }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "104px",
-                      height: "104px",
-                      borderRadius: "9999px",
-                      backgroundColor: "#161b4e",
-                      fontSize: "42px",
-                      fontWeight: 700,
-                      color: "#ffffff",
-                    }}
-                  >
-                    {initialChar}
-                  </div>
-                )}
-
-                {/* Verified Dot */}
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "2px",
-                    right: "2px",
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "9999px",
-                    backgroundColor: "#35ed7e",
-                    border: "3px solid #0a0d3a",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#0a0d3a",
-                    fontSize: "15px",
-                    fontWeight: 700,
-                  }}
-                >
-                  ✓
-                </div>
-              </div>
-
-              {/* Name & Handle */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "8px",
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: "44px",
-                    fontWeight: 700,
-                    lineHeight: 1.15,
-                    letterSpacing: "-1px",
-                  }}
-                >
-                  {safeDisplayName}
-                </span>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    alignSelf: "flex-start",
-                    backgroundColor: "rgba(53, 237, 126, 0.14)",
-                    border: "1px solid rgba(53, 237, 126, 0.35)",
-                    borderRadius: "10px",
-                    padding: "4px 12px",
-                    fontSize: "19px",
-                    fontWeight: 700,
-                    color: "#35ed7e",
-                  }}
-                >
-                  {userProfile.handle}
-                </div>
+                {userProfile.handle}
               </div>
             </div>
 
@@ -294,228 +300,88 @@ export default async function DynamicProfileOpenGraphImage({ params }: Props) {
             <div
               style={{
                 display: "flex",
-                fontSize: "22px",
-                color: "rgba(255, 255, 255, 0.78)",
-                lineHeight: 1.5,
-                marginTop: "4px",
+                fontSize: "24px",
+                color: "rgba(255, 255, 255, 0.74)",
+                lineHeight: 1.45,
+                maxWidth: "820px",
+                textAlign: "center",
               }}
             >
               {safeBio}
             </div>
           </div>
 
-          {/* Bottom Metadata Bar */}
+          {/* Bottom Bar: Stats & CTA */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "12px",
+              justifyContent: "space-between",
+              width: "100%",
+              paddingTop: "18px",
+              borderTop: "1px solid rgba(255, 255, 255, 0.1)",
             }}
           >
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "8px",
-                backgroundColor: "rgba(255, 255, 255, 0.06)",
-                border: "1px solid rgba(255, 255, 255, 0.14)",
-                borderRadius: "12px",
-                padding: "9px 16px",
-                fontSize: "16px",
-                color: "rgba(255, 255, 255, 0.85)",
-                fontWeight: 700,
+                gap: "12px",
               }}
             >
-              <span style={{ color: "#5865f2" }}>●</span>
-              <span>등록된 링크 {validLinks.length}개</span>
-            </div>
-
-            {totalClicks > 0 && (
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  backgroundColor: "rgba(53, 237, 126, 0.12)",
-                  border: "1px solid rgba(53, 237, 126, 0.32)",
+                  backgroundColor: "rgba(255, 255, 255, 0.06)",
+                  border: "1px solid rgba(255, 255, 255, 0.14)",
                   borderRadius: "12px",
-                  padding: "9px 16px",
-                  fontSize: "16px",
-                  color: "#35ed7e",
+                  padding: "8px 16px",
+                  fontSize: "17px",
+                  color: "rgba(255, 255, 255, 0.88)",
                   fontWeight: 700,
                 }}
               >
-                <span>누적 클릭 {totalClicks.toLocaleString()}회</span>
+                <span style={{ color: "#5865f2" }}>●</span>
+                <span>등록된 링크 {validLinks.length}개</span>
               </div>
-            )}
-          </div>
-        </div>
 
-        {/* Right Column: Live Link Stack Preview */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            width: "496px",
-            backgroundColor: "rgba(18, 22, 58, 0.9)",
-            border: "2px solid rgba(88, 101, 242, 0.45)",
-            borderRadius: "30px",
-            padding: "28px",
-            boxShadow: "0 24px 60px rgba(0, 0, 0, 0.55)",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              paddingBottom: "14px",
-              borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-              fontSize: "16px",
-              color: "rgba(255, 255, 255, 0.65)",
-            }}
-          >
-            <span style={{ fontWeight: 700, color: "#ffffff" }}>주요 링크 바로가기</span>
-            <span style={{ color: "#35ed7e", fontSize: "14px", fontWeight: 700 }}>
-              LIVE LINKS
-            </span>
-          </div>
+              {totalClicks > 0 && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    backgroundColor: "rgba(53, 237, 126, 0.12)",
+                    border: "1px solid rgba(53, 237, 126, 0.34)",
+                    borderRadius: "12px",
+                    padding: "8px 16px",
+                    fontSize: "17px",
+                    color: "#35ed7e",
+                    fontWeight: 700,
+                  }}
+                >
+                  <span>누적 클릭 {totalClicks.toLocaleString()}회</span>
+                </div>
+              )}
+            </div>
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "12px",
-              marginTop: "16px",
-              marginBottom: "16px",
-              flex: 1,
-              justifyContent: "center",
-            }}
-          >
-            {topLinks.length === 0 ? (
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "40px 20px",
-                  borderRadius: "18px",
-                  backgroundColor: "rgba(255, 255, 255, 0.04)",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                  color: "rgba(255, 255, 255, 0.6)",
-                  fontSize: "18px",
-                }}
-              >
-                <span>프로필 페이지를 방문해 보세요</span>
-              </div>
-            ) : (
-              topLinks.map((item, idx) => {
-                const accent = LINK_ACCENTS[idx % LINK_ACCENTS.length];
-                const titleText =
-                  item.title.length > 22 ? `${item.title.slice(0, 22)}…` : item.title;
-
-                return (
-                  <div
-                    key={item.id}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "16px 18px",
-                      borderRadius: "16px",
-                      backgroundColor: item.isFeatured
-                        ? "rgba(88, 101, 242, 0.25)"
-                        : "rgba(30, 35, 83, 0.65)",
-                      border: item.isFeatured
-                        ? "1.5px solid #5865f2"
-                        : "1px solid rgba(255, 255, 255, 0.12)",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "14px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          width: "36px",
-                          height: "36px",
-                          borderRadius: "10px",
-                          backgroundColor: "rgba(255, 255, 255, 0.07)",
-                          border: `1.5px solid ${accent}`,
-                          fontSize: "15px",
-                          fontWeight: 700,
-                          color: accent,
-                        }}
-                      >
-                        {idx + 1}
-                      </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "2px",
-                        }}
-                      >
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                          <span style={{ fontSize: "18px", fontWeight: 700, color: "#ffffff" }}>
-                            {titleText}
-                          </span>
-                          {item.isFeatured && (
-                            <span
-                              style={{
-                                fontSize: "11px",
-                                fontWeight: 700,
-                                backgroundColor: "rgba(236, 72, 189, 0.25)",
-                                color: "#ec48bd",
-                                padding: "2px 7px",
-                                borderRadius: "6px",
-                              }}
-                            >
-                              PICK
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <span
-                      style={{
-                        fontSize: "18px",
-                        fontWeight: 700,
-                        color: "rgba(255, 255, 255, 0.45)",
-                      }}
-                    >
-                      →
-                    </span>
-                  </div>
-                );
-              })
-            )}
-          </div>
-
-          {/* Bottom URL Watermark */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              paddingTop: "12px",
-              borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-              fontSize: "15px",
-              color: "rgba(255, 255, 255, 0.5)",
-            }}
-          >
-            <span>mylink.app/{userProfile.displayName}</span>
-            <span style={{ color: "#35ed7e", fontWeight: 700 }}>방문하기 ↗</span>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                backgroundColor: "#5865f2",
+                borderRadius: "12px",
+                padding: "9px 20px",
+                fontSize: "17px",
+                fontWeight: 700,
+                color: "#ffffff",
+              }}
+            >
+              <span>프로필 방문하기 ↗</span>
+            </div>
           </div>
         </div>
       </div>
