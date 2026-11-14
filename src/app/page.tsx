@@ -11,7 +11,7 @@ import { LinkStatsSection } from "@/components/stats/LinkStatsSection";
 import { ShareButton } from "@/components/profile/ShareButton";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { MyPageButton } from "@/components/navigation/MyPageButton";
-import { GuestWelcomeHero } from "@/components/auth/GuestWelcomeHero";
+import { LandingPage } from "@/components/landing/LandingPage";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
@@ -111,14 +111,20 @@ export default function HomePage() {
     };
   }, [user, userProfile]);
 
+  const isGuestLanding = mounted && !isAuthLoading && !user;
+
   return (
     <div className="min-h-screen bg-[#0a0d3a] text-white flex flex-col justify-between items-center relative overflow-x-hidden selection:bg-[#5865f2] selection:text-white">
       {/* Ambient background glow according to design.md */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-96 bg-gradient-to-b from-[#5865f2]/20 via-[#ec48bd]/10 to-transparent blur-3xl pointer-events-none -z-10" />
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-96 bg-gradient-to-b from-[#5865f2]/20 via-[#ec48bd]/10 to-transparent blur-3xl pointer-events-none -z-10" />
       <div className="fixed bottom-0 right-0 w-80 h-80 bg-[#5865f2]/10 blur-3xl rounded-full pointer-events-none -z-10" />
 
-      {/* Main Container: Mobile-first 440px max width */}
-      <main className="w-full max-w-[440px] px-4 py-6 sm:py-10 flex flex-col flex-1">
+      {/* Main Container: 게스트 랜딩은 반응형 와이드(max-w-5xl), 로그인 관리 홈은 440px 집중형 */}
+      <main
+        className={`w-full px-4 py-6 sm:py-10 flex flex-col flex-1 transition-all duration-300 ${
+          isGuestLanding ? "max-w-5xl sm:px-6 lg:px-8" : "max-w-[440px]"
+        }`}
+      >
         {/* Top Utility Bar with Google Auth and Share buttons */}
         <header className="flex items-center justify-between w-full pb-4 gap-2">
           <div className="flex items-center gap-2">
@@ -129,20 +135,22 @@ export default function HomePage() {
           <div className="flex items-center gap-2">
             <MyPageButton />
             <GoogleAuthButton />
-            <ShareButton />
+            {user && <ShareButton />}
           </div>
         </header>
 
-        {/* Profile Header (Avatar, Name, Handle, Bio) */}
-        <ProfileHeader
-          displayName={currentProfile.displayName}
-          handle={currentProfile.handle}
-          bio={currentProfile.bio}
-          avatarUrl={currentProfile.avatarUrl}
-          isLoggedIn={currentProfile.isLoggedIn}
-        />
+        {/* Profile Header (로그인 유저 관리 화면에서만 표시) */}
+        {user && (
+          <ProfileHeader
+            displayName={currentProfile.displayName}
+            handle={currentProfile.handle}
+            bio={currentProfile.bio}
+            avatarUrl={currentProfile.avatarUrl}
+            isLoggedIn={currentProfile.isLoggedIn}
+          />
+        )}
 
-        {/* 조건부 화면 렌더링: 비로그인 상태 안내 vs 로그인 상태 개인화 링크 관리 */}
+        {/* 조건부 화면 렌더링: 비로그인 랜딩 페이지 vs 로그인 상태 개인화 링크 관리 */}
         {!mounted || isAuthLoading ? (
           <div
             data-testid="auth-loading-spinner"
@@ -156,23 +164,8 @@ export default function HomePage() {
             <span className="text-xs text-white/60">인증 정보를 확인하는 중...</span>
           </div>
         ) : !user ? (
-          // ─── 1. 비로그인 게스트 화면 ───
-          <div className="space-y-4 animate-in fade-in duration-400">
-            {/* 로그인 유도 설명 히어로 카드 */}
-            <GuestWelcomeHero />
-
-            {/* 새 링크 추가 시도 시 로그인 안내 다이얼로그 */}
-            <div className="pt-1 pb-1">
-              <AddLinkDialog />
-            </div>
-
-            {/* 비로그인 방문자용 샘플 안내 안내 카드 */}
-            <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/10 text-center space-y-1">
-              <p className="text-xs text-white/50">
-                🔒 현재 게스트 모드입니다. 링크를 등록하려면 먼저 로그인해 주세요.
-              </p>
-            </div>
-          </div>
+          // ─── 1. 비로그인 게스트 반응형 랜딩 페이지 ───
+          <LandingPage />
         ) : (
           // ─── 2. 로그인 유저 개인화 화면 ───
           <div className="space-y-3.5 animate-in fade-in duration-400">
