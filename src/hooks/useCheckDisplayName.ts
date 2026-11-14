@@ -41,7 +41,7 @@ export function useCheckDisplayName({
   );
 
   const query = useQuery({
-    queryKey: ["checkDisplayName", trimmed],
+    queryKey: ["checkDisplayName", trimmed.toLowerCase()],
     queryFn: () => checkDisplayNameAvailable(trimmed, currentUid!),
     enabled: shouldQuery,
     staleTime: 1000 * 60 * 5, // 5분 캐싱: 같은 닉네임을 다시 입력 시 즉시 캐시값 반환
