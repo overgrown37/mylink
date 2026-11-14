@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { fetchUserByDisplayName } from "@/lib/userProfile";
 import { getLinksFromFirestore } from "@/lib/firestoreLinks";
 import { getOgFonts, fetchSafeAvatarDataUri } from "@/lib/ogFont";
+import { PRODUCTION_DOMAIN } from "@/lib/siteConfig";
 
 export const alt = "마이링크 (MyLink) 공개 프로필";
 export const size = {
@@ -38,7 +39,7 @@ export default async function DynamicProfileOpenGraphImage({ params }: Props) {
             backgroundColor: "#0a0d3a",
             backgroundImage:
               "radial-gradient(circle at 50% 30%, rgba(88, 101, 242, 0.28), transparent 60%)",
-            fontFamily: '"Noto Sans KR", sans-serif',
+            fontFamily: '"Pretendard", sans-serif',
             color: "#ffffff",
             gap: "18px",
           }}
@@ -107,7 +108,7 @@ export default async function DynamicProfileOpenGraphImage({ params }: Props) {
           backgroundImage:
             "radial-gradient(circle at 20% 20%, rgba(88, 101, 242, 0.36), transparent 48%), radial-gradient(circle at 82% 80%, rgba(236, 72, 189, 0.3), transparent 48%), radial-gradient(circle at 50% 92%, rgba(53, 237, 126, 0.16), transparent 46%)",
           padding: "44px 56px",
-          fontFamily: '"Noto Sans KR", sans-serif',
+          fontFamily: '"Pretendard", sans-serif',
           color: "#ffffff",
         }}
       >
@@ -172,7 +173,7 @@ export default async function DynamicProfileOpenGraphImage({ params }: Props) {
                 color: "rgba(255, 255, 255, 0.8)",
               }}
             >
-              <span>mylink.app/</span>
+              <span>{PRODUCTION_DOMAIN}/</span>
               <span style={{ color: "#35ed7e", fontWeight: 700 }}>
                 {userProfile.displayName}
               </span>

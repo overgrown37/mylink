@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getOgFonts } from "@/lib/ogFont";
+import { PRODUCTION_DOMAIN } from "@/lib/siteConfig";
 
 export const alt = "마이링크 (MyLink) | 나만의 원링크 프로필";
 export const size = {
@@ -25,7 +26,7 @@ export default async function OpenGraphImage() {
           backgroundImage:
             "radial-gradient(circle at 18% 20%, rgba(88, 101, 242, 0.32), transparent 45%), radial-gradient(circle at 82% 80%, rgba(236, 72, 189, 0.25), transparent 45%), radial-gradient(circle at 55% 10%, rgba(53, 237, 126, 0.14), transparent 40%)",
           padding: "60px 68px",
-          fontFamily: '"Noto Sans KR", sans-serif',
+          fontFamily: '"Pretendard", sans-serif',
           color: "#ffffff",
           position: "relative",
         }}
@@ -142,7 +143,7 @@ export default async function OpenGraphImage() {
                 fontWeight: 700,
               }}
             >
-              <span>mylink.app/닉네임</span>
+              <span>{PRODUCTION_DOMAIN}/닉네임</span>
             </div>
             <div
               style={{
@@ -216,9 +217,9 @@ export default async function OpenGraphImage() {
 
           {/* Mock Link Items */}
           {[
-            { icon: "🚀", title: "포트폴리오 & 프로젝트", badge: "HOT", featured: true, clicks: "128" },
-            { icon: "💻", title: "GitHub 오픈소스", badge: "", featured: false, clicks: "64" },
-            { icon: "📺", title: "유튜브 & 기술 블로그", badge: "", featured: false, clicks: "42" },
+            { num: "01", accent: "#5865f2", title: "포트폴리오 & 프로젝트", featured: true, clicks: "128" },
+            { num: "02", accent: "#35ed7e", title: "GitHub 오픈소스", featured: false, clicks: "64" },
+            { num: "03", accent: "#ec48bd", title: "유튜브 & 기술 블로그", featured: false, clicks: "42" },
           ].map((item, idx) => (
             <div
               key={idx}
@@ -237,7 +238,23 @@ export default async function OpenGraphImage() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <span style={{ fontSize: "20px" }}>{item.icon}</span>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "30px",
+                    height: "30px",
+                    borderRadius: "8px",
+                    backgroundColor: "rgba(255, 255, 255, 0.07)",
+                    border: `1.5px solid ${item.accent}`,
+                    color: item.accent,
+                    fontSize: "13px",
+                    fontWeight: 700,
+                  }}
+                >
+                  {item.num}
+                </div>
                 <span style={{ fontSize: "16px", fontWeight: 700 }}>{item.title}</span>
               </div>
               <div
