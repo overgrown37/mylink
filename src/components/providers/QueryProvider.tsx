@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { initAuthListener } from "@/store/useAuthStore";
 
 interface QueryProviderProps {
   children: React.ReactNode;
@@ -20,6 +21,14 @@ export function QueryProvider({ children }: QueryProviderProps) {
         },
       })
   );
+
+  // 전역 Firebase Auth 상태 리스너 등록 (모든 페이지에서 인증 상태 동기화)
+  useEffect(() => {
+    const unsubscribeAuth = initAuthListener();
+    return () => {
+      unsubscribeAuth();
+    };
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

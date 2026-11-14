@@ -15,6 +15,7 @@ import {
   Globe,
   Home,
   Pencil,
+  BarChart2,
 } from "lucide-react";
 import { EditProfileDialog } from "@/components/profile/EditProfileDialog";
 
@@ -188,6 +189,29 @@ export function GoogleAuthButton() {
                 </div>
                 <span className="text-[9px] uppercase font-bold text-[#35ed7e] bg-[#35ed7e]/10 border border-[#35ed7e]/30 px-1.5 py-0.5 rounded-md">
                   Live
+                </span>
+              </Link>
+
+              {/* 통계 페이지 이동 */}
+              <Link
+                href="/stat"
+                data-testid="menu-item-stat"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center justify-between w-full px-3 py-2 rounded-xl text-left hover:bg-[#5865f2]/20 text-white/90 hover:text-white transition-all group cursor-pointer"
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="p-1 rounded-lg bg-[#5865f2]/20 text-[#5865f2] group-hover:text-[#35ed7e] transition-colors">
+                    <BarChart2 className="w-3.5 h-3.5" />
+                  </span>
+                  <div>
+                    <span className="text-xs font-semibold block">통계 대시보드</span>
+                    <span className="text-[10px] text-white/40 block">
+                      클릭 수 & 트래픽 차트
+                    </span>
+                  </div>
+                </div>
+                <span className="text-[9px] uppercase font-bold text-[#5865f2] bg-[#5865f2]/15 border border-[#5865f2]/30 px-1.5 py-0.5 rounded-md">
+                  Chart
                 </span>
               </Link>
 

@@ -26,8 +26,12 @@ service cloud.firestore {
         // 📖 읽기: 누구나 가능 (공개 링크 열람)
         allow read: if true;
 
-        // ✍️ 쓰기: 본인만 생성/수정/삭제 가능
-        allow write: if isOwner(userId);
+        // ✍️ 생성 및 삭제: 본인만 가능
+        allow create, delete: if isOwner(userId);
+
+        // 🔄 수정: 본인이거나, 오직 clicks 필드만 수정하는 경우(서버 API 및 방문자 요청) 허용
+        allow update: if isOwner(userId)
+          || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['clicks']);
       }
 
       // ───────────────────────────────────────────────────────────

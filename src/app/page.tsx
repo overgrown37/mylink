@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect, useSyncExternalStore } from "react";
 import { useProfileStore } from "@/store/useProfileStore";
-import { useAuthStore, initAuthListener } from "@/store/useAuthStore";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useProfileQuery } from "@/hooks/useProfileQuery";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { LinkList } from "@/components/links/LinkList";
 import { AddLinkDialog } from "@/components/links/AddLinkDialog";
+import { LinkStatsSection } from "@/components/stats/LinkStatsSection";
 import { ShareButton } from "@/components/profile/ShareButton";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { MyPageButton } from "@/components/navigation/MyPageButton";
@@ -34,15 +35,7 @@ export default function HomePage() {
   // Firestore 로딩 상태: 로그인한 유저의 링크 데이터가 아직 로드되지 않은 상태일 때만 true
   const isFirestoreLoading = Boolean(user && loadedUserUid !== user.uid);
 
-  // 1. Firebase Auth 리스너 초기화 (SSR-safe)
-  useEffect(() => {
-    const unsubscribeAuth = initAuthListener();
-    return () => {
-      unsubscribeAuth();
-    };
-  }, []);
-
-  // 2. 로그인 상태에 따른 Firestore users/{uid}/links 실시간 구독
+  // 로그인 상태에 따른 Firestore users/{uid}/links 실시간 구독
   useEffect(() => {
     if (!user) return;
 
@@ -182,9 +175,12 @@ export default function HomePage() {
           </div>
         ) : (
           // ─── 2. 로그인 유저 개인화 화면 ───
-          <div className="space-y-3 animate-in fade-in duration-400">
+          <div className="space-y-3.5 animate-in fade-in duration-400">
+            {/* Realtime Link Click Analytics Section */}
+            <LinkStatsSection links={storeProfile.links} />
+
             {/* Action: Add Link Dialog Trigger */}
-            <div className="pt-2 pb-1">
+            <div className="pt-1 pb-1">
               <AddLinkDialog />
             </div>
 

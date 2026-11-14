@@ -72,6 +72,7 @@ const docToLinkItem = (id: string, data: DocumentData): LinkItem => {
     isFeatured: data.isFeatured,
     category: data.category,
     createdAt,
+    clicks: typeof data.clicks === "number" ? data.clicks : 0,
   };
 };
 
@@ -85,6 +86,7 @@ export const addLinkToFirestore = async (
   const linksCol = getLinksCollection(uid);
   const cleanData = sanitizeForFirestore({
     ...newLinkData,
+    clicks: typeof newLinkData.clicks === "number" ? newLinkData.clicks : 0,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
@@ -92,6 +94,7 @@ export const addLinkToFirestore = async (
   const docRef = await addDoc(linksCol, cleanData);
   return {
     ...newLinkData,
+    clicks: typeof newLinkData.clicks === "number" ? newLinkData.clicks : 0,
     id: docRef.id,
     createdAt: Date.now(),
   };

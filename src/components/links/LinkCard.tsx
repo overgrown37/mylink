@@ -5,9 +5,11 @@ import { LinkItem } from "@/types/profile";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Sparkles, Pencil, Trash2 } from "lucide-react";
+import { ExternalLink, Sparkles, Pencil, Trash2, MousePointerClick } from "lucide-react";
 import { InlineEditLinkCard } from "./InlineEditLinkCard";
 import { DeleteLinkDialog } from "./DeleteLinkDialog";
+import { useAuthStore } from "@/store/useAuthStore";
+import { recordLinkClick } from "@/lib/linkAnalytics";
 
 interface LinkCardProps {
   item: LinkItem;
@@ -16,6 +18,7 @@ interface LinkCardProps {
 export function LinkCard({ item }: LinkCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const user = useAuthStore((state) => state.user);
 
   const isFeatured = item.isFeatured;
 
@@ -30,9 +33,12 @@ export function LinkCard({ item }: LinkCardProps) {
     );
   }
 
-  // 카드 본문 클릭 시 링크 새 창으로 이동
+  // 카드 본문 클릭 시 링크 새 창으로 이동 및 카운트 +1
   const handleCardClick = () => {
     if (item.url) {
+      if (user?.uid) {
+        recordLinkClick(user.uid, item.id);
+      }
       window.open(item.url, "_blank", "noopener,noreferrer");
     }
   };
@@ -97,6 +103,15 @@ export function LinkCard({ item }: LinkCardProps) {
                       {item.badge}
                     </Badge>
                   )}
+
+                  {/* 누적 클릭 수 뱃지 */}
+                  <span
+                    className="inline-flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-[#35ed7e]"
+                    title={`누적 클릭 수: ${item.clicks || 0}회`}
+                  >
+                    <MousePointerClick className="w-2.5 h-2.5" />
+                    <span>{item.clicks || 0}</span>
+                  </span>
                 </div>
 
                 {item.subtitle && (

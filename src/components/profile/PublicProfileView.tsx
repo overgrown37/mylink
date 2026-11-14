@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { MyPageButton } from "@/components/navigation/MyPageButton";
 import { useAuthStore } from "@/store/useAuthStore";
+import { recordLinkClick } from "@/lib/linkAnalytics";
 
 interface PublicProfileViewProps {
   profile: FirestoreUserProfile;
@@ -195,6 +196,7 @@ export function PublicProfileView({
                   href={item.url || "#"}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => recordLinkClick(profile.uid, item.id)}
                   className="group relative block w-full outline-none focus-visible:ring-2 focus-visible:ring-[#5865f2] rounded-2xl transition-all cursor-pointer active:scale-[0.99]"
                 >
                   <Card
